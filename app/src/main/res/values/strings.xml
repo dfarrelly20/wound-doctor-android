@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Wound Doctor</string>
+    <string name="get_started_text">Get Started</string>
+    <string name="wound_doctor_title_text">Wound Doctor</string>
+    <string name="login_email_address_hint">Email Address</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button_text">Login</string>
+    <string name="login_or_text">Or</string>
+    <string name="login_create_account_button">Create Account</string>
+    <string name="create_account_confirm_id_text">Please confirm your email address by entering the unique verification ID sent to you by your doctor</string>
+    <string name="create_account_thank_you_text">Thank you for confirming. Please fill in the rest of your details to create your account</string>
+    <string name="create_account_patient_id_hint">Verification ID</string>
+    <string name="create_account_first_name_hint">First Name</string>
+    <string name="create_account_last_name_hint">Last Name</string>
+    <string name="login_confirm_patient_button">Confirm</string>
+    <string name="create_account_phone_hint">Contact Number</string>
+    <string name="main_take_a_picture">Take a Picture</string>
+    <string name="menu_title">Take Picture</string>
+    <string name="menu_sign_out">Sign Out</string>
+</resources>
