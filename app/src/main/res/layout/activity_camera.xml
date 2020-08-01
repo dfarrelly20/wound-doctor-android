@@ -8,10 +8,30 @@
     android:layout_height="match_parent"
     tools:context=".CameraActivity">
 
+<!--    <ImageButton-->
+<!--        android:elevation="1"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:id="@+id/camera_FlashButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:backgroundTint="#FFFFFF"-->
+<!--        android:src="@drawable/flash" />-->
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:text="Flash Off"
+        android:textStyle=""
+        android:textColor="@android:color/black"
+        android:background="@android:color/transparent"
+        android:id="@+id/camera_FlashButton"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <TextureView
         android:id="@+id/camera_TextureView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <ProgressBar
         android:id="@+id/camera_ProgressBar"
@@ -35,13 +55,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="#FFFFFF"
             android:src="@drawable/capture" />
-
-        <ImageButton
-            android:id="@+id/camera_FlashButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            android:src="@drawable/flash" />
 
     </LinearLayout>
 

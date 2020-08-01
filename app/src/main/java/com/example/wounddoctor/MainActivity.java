@@ -3,6 +3,7 @@ package com.example.wounddoctor;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,9 @@ import util.PatientManager;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button captureButton;
+    private Button myWoundsButton;
+    private CardView takePictureCard;
+    private CardView myWoundsCard;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
@@ -85,16 +89,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
 
-        captureButton = findViewById(R.id.main_TakePictureButton);
-        captureButton.setOnClickListener(this);
+        takePictureCard = findViewById(R.id.main_takePictureCard);
+        takePictureCard.setOnClickListener(this);
+        myWoundsCard = findViewById(R.id.main_myWoundsCard);
+        myWoundsCard.setOnClickListener(this);
+
+        //captureButton = findViewById(R.id.main_TakePictureButton);
+        //captureButton.setOnClickListener(this);
+        //myWoundsButton = findViewById(R.id.main_MyWoundsButton);
+        //myWoundsButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+//        switch (v.getId()){
+//            case R.id.main_TakePictureButton :
+//                startActivity(new Intent(MainActivity.this,
+//                        CameraActivity.class));
+//                break;
+//            case R.id.main_MyWoundsButton :
+//                startActivity(new Intent(MainActivity.this,
+//                        LimbListActivity.class));
+//                break;
+//        }
         switch (v.getId()){
-            case R.id.main_TakePictureButton :
+            case R.id.main_takePictureCard :
                 startActivity(new Intent(MainActivity.this,
                         CameraActivity.class));
+                break;
+            case R.id.main_myWoundsCard:
+                startActivity(new Intent(MainActivity.this,
+                        LimbListActivity.class));
                 break;
         }
     }

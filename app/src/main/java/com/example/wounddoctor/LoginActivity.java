@@ -138,10 +138,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             try {
                                 throw Objects.requireNonNull(task.getException());
                             } catch (FirebaseAuthInvalidUserException e) {
-                                Toast.makeText(LoginActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Please enter a valid email.", Toast.LENGTH_SHORT).show();
                             } catch (FirebaseAuthInvalidCredentialsException e) {
                                 Toast.makeText(LoginActivity.this, "Password not recognised. Please try again.", Toast.LENGTH_SHORT).show();
                             } catch (FirebaseNetworkException e) {
+                                Toast.makeText(LoginActivity.this, "Network connection required to login. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "sign in failed due to network: " + e.toString());
                             } catch (Exception e) {
                                 Log.d(TAG, "sign in failed: " + e.toString());
@@ -159,7 +160,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
 
         } else {
-            Toast.makeText(this, "Please enter your email and password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter your email and password.", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
         }
 

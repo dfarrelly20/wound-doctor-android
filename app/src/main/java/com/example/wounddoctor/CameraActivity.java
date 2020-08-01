@@ -32,6 +32,7 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -63,7 +64,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     /**
      * Button to toggle flash on/off
      */
-    private ImageButton btnFlash;
+    private Button btnFlash;
 
     /**
      * TextureView for camera preview. TextureView is the view which renders captured
@@ -566,11 +567,18 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void toggleFlash() {
-        if (isTorchOn) {
-            btnFlash.setImageResource(R.drawable.flash);
+//        if (isTorchOn) {
+//            btnFlash.setImageResource(R.drawable.flash);
+//            isTorchOn = false;
+//        } else {
+//            btnFlash.setImageResource(R.drawable.flash);
+//            isTorchOn = true;
+//        }
+        if (isTorchOn){
+            btnFlash.setText("Flash Off");
             isTorchOn = false;
         } else {
-            btnFlash.setImageResource(R.drawable.flash);
+            btnFlash.setText("Flash On");
             isTorchOn = true;
         }
     }

@@ -14,7 +14,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".LimbListActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".PatientFeedbackActivity" />
         <activity android:name=".ProcessImageActivity" />
         <activity android:name=".CameraActivity" />
