@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.main_myWoundsCard:
                 startActivity(new Intent(MainActivity.this,
-                        LimbListActivity.class));
+                        MyWoundsActivity.class));
                 break;
         }
     }

@@ -74,6 +74,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
     private int actionRequested;
 
+    private String limbName;
+
     /**
      * Check state orientation of output image
      */
@@ -160,7 +162,19 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try{
+            this.getSupportActionBar().hide();
+        } catch (NullPointerException e){
+        }
         setContentView(R.layout.activity_camera);
+
+        Bundle extra = getIntent().getExtras();
+        if (extra != null){
+            actionRequested = extra.getInt("action requested");
+            limbName = extra.getString("limb name");
+            Toast.makeText(this, limbName, Toast.LENGTH_SHORT).show();
+        }
+
 
         // Check if this device has an existing directory for this app to store images - if not,
         // create one
@@ -177,7 +191,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         btnCapture = findViewById(R.id.camera_CaptureButton);
         btnCapture.setOnClickListener(this);
-
     }
 
     @Override
@@ -329,11 +342,20 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             new String[]{"image/jpeg"},
                             null);
 
+                    if (actionRequested == 1){
                         Intent sendPictureToProcess = new Intent(CameraActivity.this,
                                 ProcessImageActivity.class)
                                 .putExtra("image captured", mImageFileName)
                                 .putExtra("action requested", actionRequested);
                         startActivity(sendPictureToProcess);
+                    } else if (actionRequested == 2){
+                        Intent registerWound = new Intent(CameraActivity.this,
+                                ProcessImageActivity.class)
+                                .putExtra("image captured", mImageFileName)
+                                .putExtra("limb name", limbName)
+                                .putExtra("action requested", actionRequested);
+                        startActivity(registerWound);
+                    }
 
                     hideProgressBar();
                 }
