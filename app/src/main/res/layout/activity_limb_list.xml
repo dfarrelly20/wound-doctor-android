@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical"
+    tools:context=".LimbListActivity">
+
+    <RelativeLayout
+        android:id="@+id/limbList_TitleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/limbList_TitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:text="Where is your wound located?"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:visibility="invisible"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:id="@+id/limbList_SelectedLimbLayout"
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/limbList_SelectedTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Head Selected."
+                android:layout_marginRight="5dp"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:onClick="confirmSelection"
+                android:id="@+id/limbList_ConfirmTextView"
+                android:layout_marginRight="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Confirm"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:onClick="confirmSelection"
+                android:id="@+id/limbList_ConfirmImageButton"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:tint="@color/colorAccent"
+                android:src="@drawable/right_arrow_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bodyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/limbList_ToggleButtons"
+        android:layout_below="@+id/limbList_TitleLayout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/limbList_FrontLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/limbList_FrontImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/front"
+                tools:layout_editor_absoluteX="-16dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <Button
+                android:id="@+id/limbList_Head"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.046" />
+
+            <Button
+                android:id="@+id/limbList_Neck"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.13" />
+
+            <Button
+                android:id="@+id/limbList_LeftShoulder"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.65"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.186" />
+
+            <Button
+                android:id="@+id/limbList_RightShoulder"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.365"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.186" />
+
+            <Button
+                android:id="@+id/limbList_RightUpperArm"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.334"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.285" />
+
+            <Button
+                android:id="@+id/limbList_RightForearm"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.31"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.411" />
+
+            <Button
+                android:id="@+id/limbList_UpperChest"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.254" />
+
+            <Button
+                android:id="@+id/limbList_Abdomen"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.395" />
+
+            <Button
+                android:id="@+id/limbList_LeftForearm"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.702"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.411" />
+
+            <Button
+                android:id="@+id/limbList_LeftUpperArm"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.673"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.285" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/limbList_BackLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/limbList_BackImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/back"
+                tools:layout_editor_absoluteX="-16dp"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <Button
+                android:id="@+id/limbList_UpperBack"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackImageView"
+                app:layout_constraintVertical_bias="0.239" />
+
+            <Button
+                android:id="@+id/limbList_MidBack"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackImageView"
+                app:layout_constraintVertical_bias="0.344" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--    <TextView-->
+        <!--        android:padding="15dp"-->
+        <!--        android:layout_marginBottom="24dp"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:text="Where is your wound located?"-->
+        <!--        android:textStyle="bold"-->
+        <!--        android:textSize="22sp" />-->
+
+        <!--    <androidx.recyclerview.widget.RecyclerView-->
+        <!--        android:id="@+id/limbList_RecyclerView"-->
+        <!--        android:layout_width="match_parent"-->
+        <!--        android:layout_height="wrap_content" />-->
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/limbList_ToggleButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/limbList_FrontButton"
+            android:textColor="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:background="@android:color/transparent"
+            android:text="Front View"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/limbList_BackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:background="@android:color/transparent"
+            android:text="Back View"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

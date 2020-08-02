@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyWoundsActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_above="@+id/myWounds_RegisterLayout"
+        android:id="@+id/myWounds_RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:visibility="invisible"
+        android:id="@+id/myWounds_NoWoundsTextView"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:text="You currently have no wounds registered on Wound Doctor.\n\nSelect the option below to register a wound."
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/myWounds_RegisterLayout"
+        android:layout_alignParentBottom="true"
+        android:onClick="registerWound"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:onClick="registerWound"
+            android:id="@+id/myWounds_RegisterImageButton"
+            android:src="@android:drawable/ic_menu_add"
+            android:background="@android:color/transparent"
+            android:tint="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:onClick="registerWound"
+            android:gravity="center_horizontal"
+            android:text="Register Wound"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:id="@+id/myWound_RegisterTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+<!--        <Button-->
+<!--            android:id="@+id/myWounds_RegisterButton"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:text="Register Wound"-->
+<!--            android:textColor="@color/colorAccent"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@android:color/transparent" />-->
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
