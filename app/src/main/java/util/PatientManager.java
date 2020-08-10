@@ -6,6 +6,7 @@ public class PatientManager extends Application {
 
     private String patientId;
     private String patientName;
+
     private static PatientManager instance;
 
     public static PatientManager getInstance(){

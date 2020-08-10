@@ -126,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                 for (QueryDocumentSnapshot snapshot : value){
                                                     PatientManager patientManager = PatientManager.getInstance();
                                                     patientManager.setPatientId(snapshot.getString("patientId"));
-                                                    patientManager.setPatientName(snapshot.getString("fname"));
+                                                    patientManager.setPatientName(snapshot.getString("fName"));
 
                                                     // Go to MainActivity
                                                     startActivity(new Intent(LoginActivity.this,

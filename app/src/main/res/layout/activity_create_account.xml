@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="18dp"
+    android:padding="24dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
@@ -29,17 +29,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/createAccount_FirstTextView"
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_marginBottom="18dp"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/create_account_confirm_id_text" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:paddingRight="10dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/createAccount_FirstTextView"
+                        android:textSize="16sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/create_account_confirm_id_text" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
 
             <EditText
                 android:id="@+id/createAccount_PatientIdEditText"
+                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/create_account_patient_id_hint"
@@ -48,6 +68,7 @@
 
             <AutoCompleteTextView
                 android:id="@+id/createAccount_EmailEditText"
+                android:imeOptions="actionDone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
@@ -62,8 +83,7 @@
                 android:layout_marginTop="18dp"
                 android:background="@android:color/transparent"
                 android:text="@string/login_confirm_patient_button"
-                android:textColor="@color/colorAccent"
-                android:textStyle="bold" />
+                android:textColor="@color/colorAccent" />
 
         </LinearLayout>
 
@@ -77,8 +97,8 @@
             <TextView
                 android:id="@+id/createAccount_SecondTextView"
                 android:gravity="center"
-                android:textSize="20sp"
-                android:layout_marginBottom="18dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/create_account_thank_you_text" />
@@ -127,8 +147,7 @@
                 android:layout_marginTop="18dp"
                 android:background="@android:color/transparent"
                 android:text="@string/login_create_account_button"
-                android:textColor="@color/colorAccent"
-                android:textStyle="bold" />
+                android:textColor="@color/colorAccent" />
 
         </LinearLayout>
 

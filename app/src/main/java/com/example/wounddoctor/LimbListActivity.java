@@ -115,27 +115,33 @@ public class LimbListActivity extends AppCompatActivity implements View.OnClickL
                 toggleToBack();
                 break;
             case R.id.limbList_Head:
-                updateUI(head, "Head");
+                updateUI(head, Limb.HEAD);
                 break;
             case R.id.limbList_Neck:
-                updateUI(neck, "Neck");
+                updateUI(neck, Limb.NECK);
                 break;
         }
     }
 
-    private void updateUI(Button button, String limb) {
+    private void updateUI(Button button, Limb limb) {
+
+        String limbText = limb.toString().toLowerCase();
 
         if (currentlySelected != null) {
             currentlySelected.setBackground(getDrawable(R.drawable.round_button));
         }
 
         currentlySelected = button;
-        currentlySelectedText = limb;
+        currentlySelectedText = limbText;
         button.setBackground(getDrawable(R.drawable.round_button_selected));
         titleTextView.setVisibility(View.INVISIBLE);
         selectedLayout.setVisibility(View.VISIBLE);
-        selectedTextView.setText(limb + " selected.");
+        selectedTextView.setText(limbText + " selected.");
 
+    }
+
+    public interface LimbSelector{
+        void updateUI();
     }
 
     private void toggleToBack() {
@@ -178,7 +184,7 @@ public class LimbListActivity extends AppCompatActivity implements View.OnClickL
                                 Intent cameraIntent = new Intent(LimbListActivity.this,
                                         CameraActivity.class);
                                 cameraIntent.putExtra("limb name", currentlySelectedText);
-                                cameraIntent.putExtra("action requested", Constants.REQUEST_WOUND_ACTION);
+                                cameraIntent.putExtra("action requested", Constants.REQUEST_REGISTER_WOUND);
                                 startActivity(cameraIntent);
                                 break;
                         }
@@ -193,6 +199,11 @@ public class LimbListActivity extends AppCompatActivity implements View.OnClickL
                 .setPositiveButton("Confirm", onClickListener)
                 .setNegativeButton("Cancel", null).create()
                 .show();
+    }
+
+    public enum Limb {
+        HEAD,
+        NECK
     }
 
 }

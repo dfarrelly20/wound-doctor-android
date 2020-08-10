@@ -22,14 +22,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
@@ -40,7 +44,10 @@ import com.google.type.TimeOfDayOrBuilder;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import model.PatientImage;
@@ -85,15 +92,20 @@ public class ProcessImageActivity extends AppCompatActivity {
     FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
     FirebaseVisionImage firebaseVisionImage;
     double rotationRequired;
-    private String bandageId;
 
+    private String bandageId;
     private String limbName;
+    private String woundId;
 
     private int count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try{
+            this.getSupportActionBar().hide();
+        } catch (NullPointerException e){
+        }
         setContentView(R.layout.activity_process_image);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -132,10 +144,13 @@ public class ProcessImageActivity extends AppCompatActivity {
         if (extra != null) {
             actionRequested = extra.getInt("action requested");
             limbName = extra.getString("limb name");
+            woundId = extra.getString("wound id");
 
             imageFromCameraResult = extra.getString("image captured");
             bitmap = BitmapFactory.decodeFile(imageFromCameraResult);
             bitmap = rotateImage(bitmap);
+
+
             // bitmap = getResizedBitmap(bitmap, height);
 
             imageView.setImageBitmap(bitmap);
@@ -169,75 +184,44 @@ public class ProcessImageActivity extends AppCompatActivity {
 
             for (FirebaseVisionBarcode item : firebaseVisionBarcodes) {
 
-                if (actionRequested == Constants.REQUEST_CAMERA_ACTION){
-
-                    if (count == 1) {
-                        Log.d(TAG, "processResult: count " + count);
-                        qrCorners = item.getCornerPoints();
-                        rotationRequired = getCorners(qrCorners);
-                        imageView.setRotation((float) rotationRequired);
-                        bitmap = rotateBitmap(bitmap, (float) rotationRequired);
-                        firebaseVisionImage = FirebaseVisionImage.fromBitmap(bitmap);
-                        processImage(firebaseVisionImage);
-                    } else if (count == 2) {
-                        Log.d(TAG, "processResult: count " + count);
-                        qrCorners = item.getCornerPoints();
-                        findColour3(qrCorners);
+                // Find the id of the bandage from the QR code value
+                int valueType = item.getValueType();
+                switch (valueType) {
+                    case FirebaseVisionBarcode.TYPE_TEXT: {
+                        bandageId = item.getDisplayValue();
                     }
-
-                    int[] x = {
-                            qrCorners[0].x,
-                            qrCorners[1].x,
-                            qrCorners[2].x,
-                            qrCorners[3].x
-                    };
-
-                    int[] y = {
-                            qrCorners[0].y,
-                            qrCorners[1].y,
-                            qrCorners[2].y,
-                            qrCorners[3].y
-                    };
-
-                    Log.d(TAG, "Corner points process: " + qrCorners[0]);
-                    Log.d(TAG, "Corner points process: " + qrCorners[1]);
-                    Log.d(TAG, "Corner points process: " + qrCorners[2]);
-                    Log.d(TAG, "Corner points process: " + qrCorners[3]);
-
-                    int valueType = item.getValueType();
-                    switch (valueType) {
-                        case FirebaseVisionBarcode.TYPE_TEXT: {
-                            bandageId = item.getDisplayValue();
-                            // createDialog(item.getDisplayValue());
-                        }
+                    break;
+                    default:
+                        Log.d(TAG, "Not a recognised QR code type.");
                         break;
-                        default:
-                            createDialog("Not a recognised QR code");
-                            break;
-                    }
-
-                } else if (actionRequested == Constants.REQUEST_WOUND_ACTION) {
-
-                    int valueType = item.getValueType();
-                    switch (valueType) {
-                        case FirebaseVisionBarcode.TYPE_TEXT: {
-                            bandageId = item.getDisplayValue();
-                            // createDialog(item.getDisplayValue());
-                        }
-                        break;
-                        default:
-                            createDialog("Not a recognised QR code");
-                            break;
-                    }
-
-                    saveWound();
-
                 }
 
+                switch (actionRequested){
+                    case Constants.REQUEST_CAMERA_ACTION:
+                        if (count == 1) {
+                            qrCorners = item.getCornerPoints();
+                            assert qrCorners != null;
+                            rotationRequired = getCorners(qrCorners);
+                            imageView.setRotation((float) rotationRequired);
+                            bitmap = rotateBitmap(bitmap, (float) rotationRequired);
+                            firebaseVisionImage = FirebaseVisionImage.fromBitmap(bitmap);
+                            processImage(firebaseVisionImage);
+                        } else if (count == 2) {
+                            qrCorners = item.getCornerPoints();
+                            findColour3(qrCorners);
+                        }
+                        break;
+                    case Constants.REQUEST_REGISTER_WOUND:
+                        registerWound();
+                        break;
+                    case Constants.REQUEST_UPDATE_BANDAGE:
+                        updateWoundRecord();
+                        break;
+                }
 
             }
         } else {
-            // finish();
+            finish();
             Toast.makeText(this, "Could not read QR code", Toast.LENGTH_SHORT).show();
         }
     }
@@ -586,18 +570,6 @@ public class ProcessImageActivity extends AppCompatActivity {
 
     }
 
-    private void createDialog(String text) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(text).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
     enum Quarter {
         TOP_LEFT,
         TOP_RIGHT,
@@ -605,7 +577,7 @@ public class ProcessImageActivity extends AppCompatActivity {
         BOTTOM_RIGHT,
     }
 
-    private void saveWound() {
+    private void registerWound() {
 
         registerProgressBar.setVisibility(View.VISIBLE);
 
@@ -636,6 +608,60 @@ public class ProcessImageActivity extends AppCompatActivity {
                         Log.d(TAG, "onFailure: " + e.getMessage());
                     }
                 });
+    }
+
+    public static final String KEY_BANDAGE_ID = "bandageId";
+    public static final String KEY_DATE_CHANGED = "date";
+
+    private void updateWoundRecord(){
+
+        registerProgressBar.setVisibility(View.VISIBLE);
+
+        // Create a Hash map to update relevant document with new bandage id
+        final Map<String, Object> updateData = new HashMap<>();
+        updateData.put(KEY_BANDAGE_ID, bandageId);
+        updateData.put(KEY_DATE_CHANGED, new Timestamp(new Date()));
+
+        collectionReference
+                .whereEqualTo("woundId", woundId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                        if (task.isSuccessful()){
+                            for(QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())){
+
+                                collectionReference
+                                        .document(document.getId())
+                                        .update(updateData)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                registerProgressBar.setVisibility(View.INVISIBLE);
+                                                startActivity(new Intent(ProcessImageActivity.this,
+                                                        MyWoundsActivity.class));
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(TAG, "onFailure: could not update document" + e.toString());
+                                            }
+                                        });
+                            }
+                        }
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
     }
 
     @Override

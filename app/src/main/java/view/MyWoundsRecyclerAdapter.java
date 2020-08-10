@@ -1,16 +1,20 @@
 package view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.wounddoctor.CameraActivity;
+import com.example.wounddoctor.MyWoundsActivity;
 import com.example.wounddoctor.R;
 
 import java.util.Calendar;
@@ -18,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 
 import model.Wound;
+import util.Constants;
 import util.PatientManager;
 
 public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecyclerAdapter.ViewHolder> {
@@ -67,6 +72,7 @@ public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecycl
         public String woundId;
         public String userId;
         public String bandageId;
+        public TextView changeBandageButton;
 
         public ViewHolder(@NonNull View itemView, Context ctx) {
             super(itemView);
@@ -75,6 +81,17 @@ public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecycl
 
             limbName = itemView.findViewById(R.id.myWoundsRow_LimbNameTextView);
             date = itemView.findViewById(R.id.myWoundsRow_DateTextView);
+
+            changeBandageButton = itemView.findViewById(R.id.myWoundsRow_ChangeTextView);
+            changeBandageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context,
+                            CameraActivity.class)
+                    .putExtra("action requested", Constants.REQUEST_UPDATE_BANDAGE)
+                    .putExtra("wound id", woundId));
+                }
+            });
         }
 
     }

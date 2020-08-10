@@ -20,7 +20,6 @@
     <Button
         android:layout_marginTop="20dp"
         android:text="Flash Off"
-        android:textStyle=""
         android:textColor="@android:color/black"
         android:background="@android:color/transparent"
         android:id="@+id/camera_FlashButton"
@@ -41,7 +40,19 @@
         android:layout_height="wrap_content"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/camera_TextView"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:text="Please ensure the QR code is in focus"
+        android:layout_above="@+id/camera_BottomLayout"
+        android:layout_marginBottom="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <LinearLayout
+        android:id="@+id/camera_BottomLayout"
         android:gravity="center"
         android:background="#FFFFFF"
         android:orientation="horizontal"

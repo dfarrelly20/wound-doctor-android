@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/gradient_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -55,55 +56,56 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/main_takePictureCard"
-            android:layout_marginBottom="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:outlineSpotShadowColor="@color/colorAccent"
+            app:cardElevation="8dp">
 
             <LinearLayout
-                android:layout_marginLeft="20dp"
-                android:gravity="center_vertical|center_horizontal"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp">
 
-<!--                <ImageView-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:layout_marginRight="15dp"-->
-<!--                    android:layout_width="20dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/cameraheart" />-->
+                <!--                <ImageView-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:layout_marginRight="15dp"-->
+                <!--                    android:layout_width="20dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:src="@drawable/cameraheart" />-->
 
                 <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_marginLeft="20dp"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:text="Health Check"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorAccent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:textSize="22sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:text="Health Check"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="22sp" />
 
                     <TextView
-                        android:text="Get an update on the condition \nof your wound"
-                        android:textSize="16sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="Get an update on the condition \nof your wound"
+                        android:textSize="13sp" />
 
                 </LinearLayout>
 
                 <ImageButton
-                    android:layout_weight="1"
-                    android:src="@drawable/right_arrow_icon"
-                    android:background="@android:color/transparent"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/right_arrow_icon" />
 
             </LinearLayout>
 
@@ -112,53 +114,98 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/main_myWoundsCard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:outlineSpotShadowColor="@android:color/holo_green_dark"
+            app:cardElevation="8dp">
 
             <LinearLayout
-                android:gravity="center_vertical|center_horizontal"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-<!--                <ImageView-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:layout_marginRight="15dp"-->
-<!--                    android:layout_width="20dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:src="@drawable/heartbandage" />-->
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp">
 
                 <LinearLayout
-                    android:layout_weight="1"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:text="My Wounds"
-                        android:textStyle="bold"
-                        android:textColor="@color/colorAccent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:textSize="22sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:text="My Wounds"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="22sp" />
 
                     <TextView
-                        android:text="Register a wound or change \na bandage"
-                        android:textSize="16sp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="Register a wound or change \na bandage"
+                        android:textSize="13sp" />
 
                 </LinearLayout>
 
                 <ImageButton
-                    android:layout_weight="1"
-                    android:src="@drawable/right_arrow_icon"
-                    android:background="@android:color/transparent"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/right_arrow_icon" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/main_SignOutCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:outlineSpotShadowColor="@android:color/holo_orange_light"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp">
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:text="Sign Out"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sign out of your Wound \nDoctor account"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/right_arrow_icon" />
 
             </LinearLayout>
 

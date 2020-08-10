@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
 
@@ -21,6 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Objects;
+
+import util.Constants;
 import util.PatientManager;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -41,6 +45,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Objects.requireNonNull(getSupportActionBar()).setElevation(0);
+        Objects.requireNonNull(getSupportActionBar())
+                .setTitle(PatientManager.getInstance().getPatientName() +
+                "'s Account");
 
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -73,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                             PatientManager patientManager = PatientManager.getInstance();
                                             patientManager.setPatientId(currentUserId);
-                                            patientManager.setPatientName(snapshot.getString("fname"));
+                                            patientManager.setPatientName(snapshot.getString("fName"));
 
                                         }
 
@@ -115,7 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
             case R.id.main_takePictureCard :
                 startActivity(new Intent(MainActivity.this,
-                        CameraActivity.class));
+                        CameraActivity.class)
+                .putExtra("action requested", Constants.REQUEST_CAMERA_ACTION));
                 break;
             case R.id.main_myWoundsCard:
                 startActivity(new Intent(MainActivity.this,
@@ -133,13 +143,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
-            case R.id.menuAction_Add :
-                // Take user to take picture
-                if (currentUser != null && firebaseAuth != null){
-                    startActivity(new Intent(MainActivity.this,
-                            CameraActivity.class));
-                }
-                break;
             case R.id.menuAction_SignOut :
                 // Sign the user out
                 if (currentUser != null && firebaseAuth != null){
@@ -170,4 +173,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
     }
+
+    private TextureView textureView;
+    TextureView.SurfaceTextureListener = new
 }

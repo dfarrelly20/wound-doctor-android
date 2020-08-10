@@ -29,7 +29,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="Change Bandage"
-                android:onClick="changeBandage"
                 android:textColor="@color/colorAccent"
                 android:textSize="15sp"
                 android:id="@+id/myWoundsRow_ChangeTextView"

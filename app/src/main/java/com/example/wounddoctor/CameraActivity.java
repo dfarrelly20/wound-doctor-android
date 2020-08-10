@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import util.Constants;
 import util.ImageSaver;
 
 public class CameraActivity extends AppCompatActivity implements View.OnClickListener {
@@ -75,6 +76,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private int actionRequested;
 
     private String limbName;
+
+    private String woundId;
 
     /**
      * Check state orientation of output image
@@ -172,12 +175,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         if (extra != null){
             actionRequested = extra.getInt("action requested");
             limbName = extra.getString("limb name");
-            Toast.makeText(this, limbName, Toast.LENGTH_SHORT).show();
+            woundId = extra.getString("wound id");
         }
 
 
-        // Check if this device has an existing directory for this app to store images - if not,
-        // create one
+        // Check if this device has an existing directory for this app to store images
+        // If not, create one
         createImageFolder();
 
         textureView = findViewById(R.id.camera_TextureView);
@@ -342,19 +345,26 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             new String[]{"image/jpeg"},
                             null);
 
-                    if (actionRequested == 1){
+                    if (actionRequested == Constants.REQUEST_CAMERA_ACTION){
                         Intent sendPictureToProcess = new Intent(CameraActivity.this,
                                 ProcessImageActivity.class)
                                 .putExtra("image captured", mImageFileName)
                                 .putExtra("action requested", actionRequested);
                         startActivity(sendPictureToProcess);
-                    } else if (actionRequested == 2){
+                    } else if (actionRequested == Constants.REQUEST_REGISTER_WOUND){
                         Intent registerWound = new Intent(CameraActivity.this,
                                 ProcessImageActivity.class)
                                 .putExtra("image captured", mImageFileName)
                                 .putExtra("limb name", limbName)
                                 .putExtra("action requested", actionRequested);
                         startActivity(registerWound);
+                    } else if (actionRequested == Constants.REQUEST_UPDATE_BANDAGE){
+                        Intent updateWoundIntent = new Intent(CameraActivity.this,
+                                ProcessImageActivity.class)
+                                .putExtra("image captured", mImageFileName)
+                                .putExtra("wound id", woundId)
+                                .putExtra("action requested", actionRequested);
+                        startActivity(updateWoundIntent);
                     }
 
                     hideProgressBar();
@@ -507,6 +517,8 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+            // Log.d(TAG, "onSurfaceTextureSizeChanged: camera moved");
+            // When the camera moves this is where the camera updates the surface
         }
     };
 

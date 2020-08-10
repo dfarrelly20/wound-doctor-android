@@ -30,6 +30,10 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try{
+            this.getSupportActionBar().hide();
+        } catch (NullPointerException e){
+        }
         setContentView(R.layout.activity_splash_screen);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -63,7 +67,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                                             PatientManager patientManager = PatientManager.getInstance();
                                             patientManager.setPatientId(currentUserId);
-                                            patientManager.setPatientName(snapshot.getString("fname"));
+                                            patientManager.setPatientName(snapshot.getString("fName"));
 
                                             startActivity(new Intent(SplashScreenActivity.this,
                                                     MainActivity.class));

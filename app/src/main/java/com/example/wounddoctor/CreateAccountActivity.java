@@ -68,6 +68,9 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Create Account");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         verificationIdEditText = findViewById(R.id.createAccount_PatientIdEditText);

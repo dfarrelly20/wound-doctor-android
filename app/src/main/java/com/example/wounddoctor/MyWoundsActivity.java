@@ -84,10 +84,10 @@ public class MyWoundsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void changeBandage(View view){
-        startActivity(new Intent(MyWoundsActivity.this,
-                        CameraActivity.class));
-    }
+//    public void changeBandage(View view){
+//        startActivity(new Intent(MyWoundsActivity.this,
+//                        CameraActivity.class));
+//    }
 
     public void registerWound(View view){
         startActivity(new Intent(MyWoundsActivity.this,
