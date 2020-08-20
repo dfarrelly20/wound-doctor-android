@@ -1,11 +1,8 @@
 package com.example.wounddoctor;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,58 +10,24 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.StorageReference;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-
-import model.Limb;
 import util.Constants;
-import view.LimbListRecyclerAdapter;
 
-public class LimbListActivity extends AppCompatActivity implements View.OnClickListener {
-
-    // private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    // private StorageReference storageReference;
-    // private CollectionReference collectionReference = db.collection("limbs");
-
-    // private List<Limb> limbList;
-    // private RecyclerView recyclerView;
-    // private LimbListRecyclerAdapter recyclerAdapter;
-
-    // private final int REQUEST_WOUND_ACTIVITY = 2;
+public class LimbListActivity extends AppCompatActivity {
 
     private ConstraintLayout frontLayout;
     private ConstraintLayout backLayout;
-    // private ConstraintLayout selectedLayout;
     private LinearLayout selectedLayout;
 
     private TextView titleTextView;
     private TextView selectedTextView;
-    private TextView confirmTextView;
-
-    private ImageView selectedImageView;
 
     private boolean frontView = true;
     private Button frontViewButton;
     private Button backViewButton;
-    private ImageButton confirmImageButton;
-
-    private Button head;
-    private Button neck;
 
     private Button currentlySelected;
     private String currentlySelectedText;
@@ -79,7 +42,6 @@ public class LimbListActivity extends AppCompatActivity implements View.OnClickL
 
         frontLayout = findViewById(R.id.limbList_FrontLayout);
         backLayout = findViewById(R.id.limbList_BackLayout);
-        // selectedLayout = findViewById(R.id.limbList_SelectedLayout);
         selectedLayout = findViewById(R.id.limbList_SelectedLimbLayout);
 
         titleTextView = findViewById(R.id.limbList_TitleTextView);
@@ -87,78 +49,47 @@ public class LimbListActivity extends AppCompatActivity implements View.OnClickL
 
         frontViewButton = findViewById(R.id.limbList_FrontButton);
         frontViewButton.setPaintFlags(frontViewButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        frontViewButton.setOnClickListener(this);
         backViewButton = findViewById(R.id.limbList_BackButton);
-        backViewButton.setOnClickListener(this);
-
-        head = findViewById(R.id.limbList_Head);
-        head.setOnClickListener(this);
-        neck = findViewById(R.id.limbList_Neck);
-        neck.setOnClickListener(this);
-
-        //currentlySelected = null;
-
-        // limbList = new ArrayList<>();
-
-        // recyclerView = findViewById(R.id.limbList_RecyclerView);
-        // recyclerView.setHasFixedSize(true);
-        // recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.limbList_FrontButton:
-                toggleToFront();
-                break;
-            case R.id.limbList_BackButton:
-                toggleToBack();
-                break;
-            case R.id.limbList_Head:
-                updateUI(head, Limb.HEAD);
-                break;
-            case R.id.limbList_Neck:
-                updateUI(neck, Limb.NECK);
-                break;
-        }
-    }
-
-    private void updateUI(Button button, Limb limb) {
-
-        String limbText = limb.toString().toLowerCase();
-
+    public void selectLimb(View view){
+        // Check if there is a button previously clicked on by the user
         if (currentlySelected != null) {
+            // If there is, reset the background of that button to the default style
             currentlySelected.setBackground(getDrawable(R.drawable.round_button));
         }
-
-        currentlySelected = button;
-        currentlySelectedText = limbText;
-        button.setBackground(getDrawable(R.drawable.round_button_selected));
+        // Cast the view that the user clicked to a button
+        currentlySelected = (Button) view;
+        // Change the background of the view to the selected style
+        currentlySelected.setBackground(getDrawable(R.drawable.round_button_selected));
+        // Get the xml tag from the view element
+        currentlySelectedText = view.getTag().toString();
+        // Hide the title 'Where is your located?'
         titleTextView.setVisibility(View.INVISIBLE);
+        // Display the layout that holds the confirmation text
         selectedLayout.setVisibility(View.VISIBLE);
-        selectedTextView.setText(limbText + " selected.");
-
+        // Concatenate the name of the selected limb to the confirmation text
+        selectedTextView.setText(currentlySelectedText + " selected.");
     }
 
-    public interface LimbSelector{
-        void updateUI();
-    }
-
-    private void toggleToBack() {
-
+    public void toggleToBack(View view) {
+        // Check if the front view is currently being displayed
         if (frontView) {
+            // If so, user wants to change to the back view -- set frontView to false
             frontView = false;
+            // Remove the underline from the front view button and replace on back view button
             backViewButton.setPaintFlags(backViewButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             frontViewButton.setPaintFlags(frontViewButton.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+            // Switch the color of the text on the buttons
             backViewButton.setTextColor(getResources().getColor(R.color.colorAccent));
             frontViewButton.setTextColor(getResources().getColor(R.color.black));
+            // Display the back view layout and hide the front view layout
             backLayout.setVisibility(View.VISIBLE);
             frontLayout.setVisibility(View.INVISIBLE);
         }
-
     }
 
-    private void toggleToFront() {
+    public void toggleToFront(View view) {
 
         if (!frontView) {
             frontView = true;
@@ -199,11 +130,6 @@ public class LimbListActivity extends AppCompatActivity implements View.OnClickL
                 .setPositiveButton("Confirm", onClickListener)
                 .setNegativeButton("Cancel", null).create()
                 .show();
-    }
-
-    public enum Limb {
-        HEAD,
-        NECK
     }
 
 }

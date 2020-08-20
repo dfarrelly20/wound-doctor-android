@@ -29,8 +29,6 @@ import util.PatientManager;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button captureButton;
-    private Button myWoundsButton;
     private CardView takePictureCard;
     private CardView myWoundsCard;
 
@@ -53,50 +51,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                currentUser = firebaseAuth.getCurrentUser();
-
-                if (currentUser != null) {
-                    // A user is signed in already
-                    currentUser = firebaseAuth.getCurrentUser();
-                    final String currentUserId = currentUser.getUid();
-
-                    collectionReference
-                            .whereEqualTo("patientId", currentUserId)
-                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot value,
-                                                    @Nullable FirebaseFirestoreException error) {
-
-                                    if (error != null){
-
-                                    }
-
-                                    String name;
-
-                                    if (!value.isEmpty()){
-
-                                        for (QueryDocumentSnapshot snapshot : value){
-
-                                            PatientManager patientManager = PatientManager.getInstance();
-                                            patientManager.setPatientId(currentUserId);
-                                            patientManager.setPatientName(snapshot.getString("fName"));
-
-                                        }
-
-                                    }
-
-                                }
-                            });
-                } else {
-                    // Currently no user signed in
-                    startActivity(new Intent(MainActivity.this,
-                            LoginActivity.class));
-                }
-            }
-        };
+//        authStateListener = new FirebaseAuth.AuthStateListener() {
+//            @Override
+//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+//                currentUser = firebaseAuth.getCurrentUser();
+//
+//                if (currentUser != null) {
+//                    // A user is signed in already
+//                    currentUser = firebaseAuth.getCurrentUser();
+//                    final String currentUserId = currentUser.getUid();
+//
+//                    collectionReference
+//                            .whereEqualTo("patientId", currentUserId)
+//                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                                @Override
+//                                public void onEvent(@Nullable QuerySnapshot value,
+//                                                    @Nullable FirebaseFirestoreException error) {
+//
+//                                    if (error != null){
+//
+//                                    }
+//
+//                                    String name;
+//
+//                                    if (!value.isEmpty()){
+//
+//                                        for (QueryDocumentSnapshot snapshot : value){
+//
+//                                            PatientManager patientManager = PatientManager.getInstance();
+//                                            patientManager.setPatientId(currentUserId);
+//                                            patientManager.setPatientName(snapshot.getString("fName"));
+//
+//                                        }
+//
+//                                    }
+//
+//                                }
+//                            });
+//                } else {
+//                    // Currently no user signed in
+//                    startActivity(new Intent(MainActivity.this,
+//                            LoginActivity.class));
+//                }
+//            }
+//        };
 
         takePictureCard = findViewById(R.id.main_takePictureCard);
         takePictureCard.setOnClickListener(this);
@@ -174,6 +172,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private TextureView textureView;
-    TextureView.SurfaceTextureListener = new
 }

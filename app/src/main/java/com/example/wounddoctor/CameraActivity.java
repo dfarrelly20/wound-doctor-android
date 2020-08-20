@@ -38,7 +38,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,14 +168,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try{
+        try {
             this.getSupportActionBar().hide();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
         }
         setContentView(R.layout.activity_camera);
 
         Bundle extra = getIntent().getExtras();
-        if (extra != null){
+        if (extra != null) {
             actionRequested = extra.getInt("action requested");
             limbName = extra.getString("limb name");
             woundId = extra.getString("wound id");
@@ -212,6 +215,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
      * {@link CameraDevice.StateCallback} is called when {@link CameraDevice} changes its status.
      * Used to check the camera device state and is required to open a camera
      */
+
     CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
@@ -276,7 +280,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             // captureBuilder.set(CaptureRequest.EDGE_MODE, CameraMetadata.EDGE_MODE_FAST);
             // captureBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             if (isTorchOn) {
-                captureBuilder.set(CaptureRequest.CONTROL_AE_MODE,CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
                 captureBuilder.set(CaptureRequest.FLASH_MODE, CaptureRequest.FLASH_MODE_SINGLE);
             }
             captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
@@ -299,10 +303,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader imageReader) {
-
-                    ImageSaver imageSaver = new ImageSaver(reader.acquireNextImage(), file);
-                    mBackgroundHandler.post(imageSaver);
-
+//                    ImageSaver imageSaver = new ImageSaver(reader.acquireNextImage(), file);
+//                    mBackgroundHandler.post(imageSaver);
+                    ImageSave imageSave = new ImageSave(reader.acquireNextImage());
+                    mBackgroundHandler.post(imageSave);
                 }
 
                 /**
@@ -345,20 +349,20 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             new String[]{"image/jpeg"},
                             null);
 
-                    if (actionRequested == Constants.REQUEST_CAMERA_ACTION){
+                    if (actionRequested == Constants.REQUEST_CAMERA_ACTION) {
                         Intent sendPictureToProcess = new Intent(CameraActivity.this,
                                 ProcessImageActivity.class)
                                 .putExtra("image captured", mImageFileName)
                                 .putExtra("action requested", actionRequested);
                         startActivity(sendPictureToProcess);
-                    } else if (actionRequested == Constants.REQUEST_REGISTER_WOUND){
+                    } else if (actionRequested == Constants.REQUEST_REGISTER_WOUND) {
                         Intent registerWound = new Intent(CameraActivity.this,
                                 ProcessImageActivity.class)
                                 .putExtra("image captured", mImageFileName)
                                 .putExtra("limb name", limbName)
                                 .putExtra("action requested", actionRequested);
                         startActivity(registerWound);
-                    } else if (actionRequested == Constants.REQUEST_UPDATE_BANDAGE){
+                    } else if (actionRequested == Constants.REQUEST_UPDATE_BANDAGE) {
                         Intent updateWoundIntent = new Intent(CameraActivity.this,
                                 ProcessImageActivity.class)
                                 .putExtra("image captured", mImageFileName)
@@ -394,28 +398,58 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void showProgressBar(){
+    private void showProgressBar() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // btnCapture.setVisibility(View.INVISIBLE);
-                // btnFlash.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
-                // setContentView(R.layout.activity_process_image);
             }
         });
     }
 
-    private void hideProgressBar(){
+    private void hideProgressBar() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // btnCapture.setVisibility(View.VISIBLE);
-                // btnFlash.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
-                // setContentView(R.layout.activity_camera);
             }
         });
+    }
+
+    private static class ImageSave implements Runnable {
+
+        private final Image mImage;
+
+        public ImageSave(Image image) {
+            mImage = image;
+        }
+
+        @Override
+        public void run() {
+            // Create a byte buffer to contain the byte data returned to us from the camera surface
+            ByteBuffer byteBuffer = mImage.getPlanes()[0].getBuffer();
+            // Set up an array of bytes to pass the data into
+            byte[] bytes = new byte[byteBuffer.remaining()];
+            // Copy the data from the byte buffer into the byte array
+            byteBuffer.get(bytes);
+            OutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = new FileOutputStream(file);
+                fileOutputStream.write(bytes);
+                mImage.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                // mImage.close();
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -429,20 +463,22 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
-                @Override
-                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    if (cameraDevice == null)
-                        return;
-                    cameraCaptureSessions = cameraCaptureSession;
-                    updatePreview();
-                }
 
-                @Override
-                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
-                    Log.i(TAG, "Changed");
-                }
-            }, null);
+            cameraDevice.createCaptureSession(Arrays.asList(surface),
+                    new CameraCaptureSession.StateCallback() {
+                        @Override
+                        public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
+                            if (cameraDevice == null)
+                                return;
+                            cameraCaptureSessions = cameraCaptureSession;
+                            updatePreview();
+                        }
+
+                        @Override
+                        public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                            Log.i(TAG, "Changed configuration");
+                        }
+                    }, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -452,15 +488,19 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         if (cameraDevice == null)
             Log.i(TAG, "Error updating camera preview");
         // captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
+
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
         captureRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 10);
+
         // captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
         // captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_TWILIGHT);
         try {
+
             cameraCaptureSessions.setRepeatingRequest(captureRequestBuilder.build(),
                     null,
                     mBackgroundHandler);
+
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -517,7 +557,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-            // Log.d(TAG, "onSurfaceTextureSizeChanged: camera moved");
             // When the camera moves this is where the camera updates the surface
         }
     };
@@ -528,7 +567,9 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                                            @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "You can't use camera without permission", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "You can't use camera without permission",
+                        Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -601,14 +642,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void toggleFlash() {
-//        if (isTorchOn) {
-//            btnFlash.setImageResource(R.drawable.flash);
-//            isTorchOn = false;
-//        } else {
-//            btnFlash.setImageResource(R.drawable.flash);
-//            isTorchOn = true;
-//        }
-        if (isTorchOn){
+        if (isTorchOn) {
             btnFlash.setText("Flash Off");
             isTorchOn = false;
         } else {

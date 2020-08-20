@@ -32,8 +32,14 @@ import view.MyWoundsRecyclerAdapter;
 
 public class MyWoundsActivity extends AppCompatActivity implements View.OnClickListener {
 
+    /**
+     * Debug tag for this activity
+     */
     private static final String TAG = "MyWoundsActivity";
 
+    /**
+     * The text that displays if there are no wounds registered by the user who is signed in
+     */
     private TextView noWoundsTextView;
     private Button registerWoundBandage;
 
@@ -64,7 +70,6 @@ public class MyWoundsActivity extends AppCompatActivity implements View.OnClickL
         // registerWoundBandage.setOnClickListener(this);
 
         woundList = new ArrayList<>();
-
         recyclerView = findViewById(R.id.myWounds_RecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -72,7 +77,7 @@ public class MyWoundsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 //            case R.id.myWounds_RegisterButton:
 //                startActivity(new Intent(MyWoundsActivity.this,
 //                        LimbListActivity.class));
@@ -89,9 +94,9 @@ public class MyWoundsActivity extends AppCompatActivity implements View.OnClickL
 //                        CameraActivity.class));
 //    }
 
-    public void registerWound(View view){
+    public void registerWound(View view) {
         startActivity(new Intent(MyWoundsActivity.this,
-                        LimbListActivity.class));
+                LimbListActivity.class));
     }
 
     @Override
@@ -105,15 +110,12 @@ public class MyWoundsActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        if (!queryDocumentSnapshots.isEmpty()){
+                        if (!queryDocumentSnapshots.isEmpty()) {
 
-                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                            for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
 
                                 Wound wound = snapshot.toObject(Wound.class);
                                 woundList.add(wound);
-
-                                Log.d(TAG, "wound id: " + wound.getWoundId());
-                                Log.d(TAG, "bandage id: " + wound.getBandageId());
 
                             }
 
@@ -130,7 +132,7 @@ public class MyWoundsActivity extends AppCompatActivity implements View.OnClickL
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        Log.d(TAG, "onFailure: " + e.toString());
                     }
                 });
     }

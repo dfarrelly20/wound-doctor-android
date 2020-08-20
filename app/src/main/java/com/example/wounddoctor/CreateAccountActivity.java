@@ -186,7 +186,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     }
 
-    private void createNewUserAccount(String email, String password, final String fName, final String lName, final String phone) {
+    private void createNewUserAccount(final String email, String password, final String fName, final String lName, final String phone) {
         if (!TextUtils.isEmpty(email)
                 && !TextUtils.isEmpty(password)
                 && !TextUtils.isEmpty(fName)
@@ -211,6 +211,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 patientObject.put("patientId", currentUserId);
                                 patientObject.put("fName", fName);
                                 patientObject.put("lName", lName);
+                                patientObject.put("email", email);
                                 patientObject.put("phone", phone);
 
                                 // Save new patient to Firestore db

@@ -20,7 +20,7 @@
             android:layout_margin="20dp"
             android:gravity="center"
             android:text="Where is your wound located?"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -39,7 +39,7 @@
                 android:gravity="center"
                 android:text="Head Selected."
                 android:layout_marginRight="5dp"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -51,7 +51,7 @@
                 android:gravity="center"
                 android:text="Confirm"
                 android:textColor="@color/colorAccent"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -90,6 +90,8 @@
 
             <Button
                 android:id="@+id/limbList_Head"
+                android:tag="Head"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -102,6 +104,8 @@
 
             <Button
                 android:id="@+id/limbList_Neck"
+                android:tag="Neck"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -114,6 +118,8 @@
 
             <Button
                 android:id="@+id/limbList_LeftShoulder"
+                android:tag="Left shoulder"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -126,6 +132,8 @@
 
             <Button
                 android:id="@+id/limbList_RightShoulder"
+                android:tag="Right shoulder"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -138,6 +146,8 @@
 
             <Button
                 android:id="@+id/limbList_RightUpperArm"
+                android:tag="Right bicep"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -150,6 +160,8 @@
 
             <Button
                 android:id="@+id/limbList_RightForearm"
+                android:tag="Right forearm"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -162,7 +174,24 @@
                 app:layout_constraintVertical_bias="0.411" />
 
             <Button
+                android:id="@+id/limbList_RightHand"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right hand"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.261"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.521" />
+
+            <Button
                 android:id="@+id/limbList_UpperChest"
+                android:tag="Chest"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -175,6 +204,8 @@
 
             <Button
                 android:id="@+id/limbList_Abdomen"
+                android:tag="Abdomen"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -187,6 +218,8 @@
 
             <Button
                 android:id="@+id/limbList_LeftForearm"
+                android:tag="Left forearm"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -198,7 +231,23 @@
                 app:layout_constraintVertical_bias="0.411" />
 
             <Button
+                android:id="@+id/limbList_LeftHand"
+                android:tag="Left hand"
+                android:onClick="selectLimb"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.746"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.521" />
+
+            <Button
                 android:id="@+id/limbList_LeftUpperArm"
+                android:tag="Left bicep"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -208,6 +257,116 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
                 app:layout_constraintVertical_bias="0.285" />
+
+            <Button
+                android:id="@+id/limbList_LeftHip"
+                android:onClick="selectLimb"
+                android:tag="Left hip"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView" />
+
+            <Button
+                android:id="@+id/limbList_RightHip"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right hip"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.407"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView" />
+
+            <Button
+                android:id="@+id/limbList_RightThigh"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right thigh"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.428"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.611" />
+
+            <Button
+                android:id="@+id/limbList_LeftThigh"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Left thigh"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.577"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.611" />
+
+            <Button
+                android:id="@+id/limbList_LeftKnee"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Left knee"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.571"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.728" />
+
+            <Button
+                android:id="@+id/limbList_RightKnee"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right knee"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.438"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.728" />
+
+            <Button
+                android:id="@+id/limbList_RightShin"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right shin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.438"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.843" />
+
+            <Button
+                android:id="@+id/limbList_LeftShin"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Left shin"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.571"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_FrontImageView"
+                app:layout_constraintVertical_bias="0.843" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -222,11 +381,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/back"
-                tools:layout_editor_absoluteX="-16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="0dp" />
 
             <Button
                 android:id="@+id/limbList_UpperBack"
+                android:tag="Upper back"
+                android:onClick="selectLimb"
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
@@ -234,7 +396,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/limbList_BackImageView"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
                 app:layout_constraintVertical_bias="0.239" />
 
             <Button
@@ -242,12 +404,112 @@
                 android:layout_width="28dp"
                 android:layout_height="27dp"
                 android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Middle back"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/limbList_BackImageView"
-                app:layout_constraintVertical_bias="0.344" />
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.332" />
+
+            <Button
+                android:id="@+id/limbList_LowerBack"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Lower back"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.432" />
+
+            <Button
+                android:id="@+id/limbList_LeftTricep"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Left tricep"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.342"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.268" />
+
+            <Button
+                android:id="@+id/limbList_RightTricep"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right tricep"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.652"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.268" />
+
+            <Button
+                android:id="@+id/limbList_LeftHamstring"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Left hamstring"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.425"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.612" />
+
+            <Button
+                android:id="@+id/limbList_RightHamstring"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right hamstring"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.571"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.612" />
+
+            <Button
+                android:id="@+id/limbList_RightCalf"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Right calf"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.548"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.847" />
+
+            <Button
+                android:id="@+id/limbList_LeftCalf"
+                android:layout_width="28dp"
+                android:layout_height="27dp"
+                android:background="@drawable/round_button"
+                android:onClick="selectLimb"
+                android:tag="Left calf"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.443"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/limbList_BackLayout"
+                app:layout_constraintVertical_bias="0.847" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -277,6 +539,7 @@
 
         <Button
             android:id="@+id/limbList_FrontButton"
+            android:onClick="toggleToFront"
             android:textColor="@color/colorAccent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -287,6 +550,7 @@
 
         <Button
             android:id="@+id/limbList_BackButton"
+            android:onClick="toggleToBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

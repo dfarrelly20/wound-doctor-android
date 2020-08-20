@@ -1,10 +1,8 @@
 package com.example.wounddoctor;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.media.ExifInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -39,7 +36,6 @@ import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetector;
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcodeDetectorOptions;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.type.TimeOfDayOrBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -48,31 +44,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
-import model.PatientImage;
 import model.Wound;
 import util.Constants;
 import util.PatientManager;
 
 public class ProcessImageActivity extends AppCompatActivity {
 
+    // Debug tag for this activity
     private static final String TAG = "ProcessTestActivity";
 
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser firebaseUser;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference = db.collection("wounds");
-
-    private int actionRequested;
 
     private TextView redTextView;
     private TextView greenTextView;
     private TextView blueTextView;
     private TextView textView;
-
     private ProgressBar registerProgressBar;
 
     private ImageView imageView;
@@ -97,14 +88,16 @@ public class ProcessImageActivity extends AppCompatActivity {
     private String limbName;
     private String woundId;
 
-    private int count = 0;
+    private int actionRequested;
+    private int imageProcessedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try{
+        try {
             this.getSupportActionBar().hide();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
+            Log.d(TAG, "onCreate: " + e.toString());
         }
         setContentView(R.layout.activity_process_image);
 
@@ -112,14 +105,10 @@ public class ProcessImageActivity extends AppCompatActivity {
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
                 firebaseUser = firebaseAuth.getCurrentUser();
                 if (firebaseUser != null) {
-
                 } else {
-
                 }
-
             }
         };
 
@@ -139,29 +128,27 @@ public class ProcessImageActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: heigth: " + height);
         Log.d(TAG, "onCreate: width: " + width);
 
-        // Collecting extra data
+        // Collecting data passed into activity
         Bundle extra = getIntent().getExtras();
         if (extra != null) {
+            // Get the requested action
             actionRequested = extra.getInt("action requested");
             limbName = extra.getString("limb name");
             woundId = extra.getString("wound id");
-
             imageFromCameraResult = extra.getString("image captured");
+
             bitmap = BitmapFactory.decodeFile(imageFromCameraResult);
             bitmap = rotateImage(bitmap);
-
-
-            // bitmap = getResizedBitmap(bitmap, height);
-
             imageView.setImageBitmap(bitmap);
             firebaseVisionImage = FirebaseVisionImage.fromBitmap(bitmap);
+            // bitmap = getResizedBitmap(bitmap, height);
 
             processImage(firebaseVisionImage);
         }
     }
 
     private void processImage(FirebaseVisionImage image) {
-        count++;
+        imageProcessedCount++;
         detector.detectInImage(image)
                 .addOnSuccessListener(new OnSuccessListener<List<FirebaseVisionBarcode>>() {
                     @Override
@@ -175,54 +162,68 @@ public class ProcessImageActivity extends AppCompatActivity {
                         Toast.makeText(ProcessImageActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
 
     private void processResult(List<FirebaseVisionBarcode> firebaseVisionBarcodes) {
-
         if (firebaseVisionBarcodes.size() > 0) {
-
             for (FirebaseVisionBarcode item : firebaseVisionBarcodes) {
-
-                // Find the id of the bandage from the QR code value
+                // Find the ID of the bandage on the image from the QR code value
                 int valueType = item.getValueType();
                 switch (valueType) {
                     case FirebaseVisionBarcode.TYPE_TEXT: {
+                        // Set the bandage ID to the QR code value
                         bandageId = item.getDisplayValue();
                     }
                     break;
                     default:
+                        // Here if the QR code value is anything but a text type
                         Log.d(TAG, "Not a recognised QR code type.");
                         break;
                 }
-
-                switch (actionRequested){
+                // Checking which action has been requested by the user
+                // -- First case is if the user has selected 'Health Check'
+                // -- Second case is if the user is registering a new wound
+                // -- Third case is if user is changing the bandage on an existing wound
+                switch (actionRequested) {
                     case Constants.REQUEST_CAMERA_ACTION:
-                        if (count == 1) {
+                        if (imageProcessedCount == 1) {
+                            // Get the initial coordinates of the QR code before rotation
                             qrCorners = item.getCornerPoints();
                             assert qrCorners != null;
+                            // Calculate how much the image needs to be rotated so that the QR code
+                            // is aligned correctly
                             rotationRequired = getCorners(qrCorners);
+                            // Rotate the image view
                             imageView.setRotation((float) rotationRequired);
+                            // Rotate the bitmap holding the image by the required amount
                             bitmap = rotateBitmap(bitmap, (float) rotationRequired);
+                            // Reset the firebase vision image to the newly rotated bitmap
                             firebaseVisionImage = FirebaseVisionImage.fromBitmap(bitmap);
+                            // Process the firebase vision image for a second time -- this time the
+                            // QR code will be orientated correctly
                             processImage(firebaseVisionImage);
-                        } else if (count == 2) {
+                        } else if (imageProcessedCount == 2) {
+                            // Find the new coordinates of the QR code on the rotated image
                             qrCorners = item.getCornerPoints();
                             findColour3(qrCorners);
                         }
                         break;
                     case Constants.REQUEST_REGISTER_WOUND:
+                        // Register new wound by adding it to collection
                         registerWound();
                         break;
                     case Constants.REQUEST_UPDATE_BANDAGE:
+                        // Update the collection record for an existing wound
                         updateWoundRecord();
                         break;
                 }
-
             }
         } else {
+            // Here if the QR code could not be read -- the image was of insufficient quality
+            // Finish this activity and revert to the CameraActivity
             finish();
-            Toast.makeText(this, "Could not read QR code", Toast.LENGTH_SHORT).show();
+            // Inform the user of the problem and request another image
+            Toast.makeText(this, "Could not read QR code", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -244,10 +245,6 @@ public class ProcessImageActivity extends AppCompatActivity {
 
         Log.d(TAG, "x array: " + Arrays.toString(x));
         Log.d(TAG, "y array: " + Arrays.toString(y));
-//        Log.d(TAG, "Corner points process: " + corners[0]);
-//        Log.d(TAG, "Corner points process: " + corners[1]);
-//        Log.d(TAG, "Corner points process: " + corners[2]);
-//        Log.d(TAG, "Corner points process: " + corners[3]);
 
         double shortSide;
         double longSide;
@@ -258,13 +255,6 @@ public class ProcessImageActivity extends AppCompatActivity {
 
         base = x[1] - x[0];
         Log.d(TAG, "base: " + base);
-
-//        qrScale = qrSize / base;
-//        Log.d(TAG, "Scale factor for qr:" + qrSize / base);
-
-        // int width = (int) (x[1] + (100*qrScale));
-        // int height = (int) (y[1] + (100*qrScale));
-        // Log.d("Dimensions",  width + ", " + height);
 
         if (y[0] < y[1]) {
             shortSide = y[0];
@@ -578,27 +568,37 @@ public class ProcessImageActivity extends AppCompatActivity {
     }
 
     private void registerWound() {
-
+        // Display loading animation while making calls to Firestore collection
         registerProgressBar.setVisibility(View.VISIBLE);
 
+        // Get the ID of the logged in user from the singleton class
         String userId = PatientManager.getInstance().getPatientId();
+        // Create a unique ID for the new wound combining the user's ID and the current time
         String woundId = userId + "_" + Timestamp.now().getSeconds();
 
+        // Create the Wound object to be added to the collection
         Wound wound = new Wound();
-
         wound.setUserId(userId);
+        // Bandage ID comes from the value read from the QR code
         wound.setBandageId(bandageId);
+        // Limb name is passed in from the LimbListActivity
         wound.setLimbName(limbName);
         wound.setDate(new Timestamp(new Date()));
         wound.setWoundId(woundId);
+        // Each new wound will require an update picture once a day
+        wound.setHoursUntilCheck(24);
 
+        // Add the wound to the collection
         collectionReference.add(wound)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        // Call to Firestore is complete - hide progress bar
                         registerProgressBar.setVisibility(View.INVISIBLE);
+                        // Return the user to the MyWoundsActivity
                         startActivity(new Intent(ProcessImageActivity.this,
                                 MyWoundsActivity.class));
+                        // End the current activity so the user can not return
                         finish();
                     }
                 })
@@ -610,28 +610,30 @@ public class ProcessImageActivity extends AppCompatActivity {
                 });
     }
 
+    // Key relating to the field bandageId in the wounds collection
     public static final String KEY_BANDAGE_ID = "bandageId";
+    // Key relating to the field date in the wounds collection
     public static final String KEY_DATE_CHANGED = "date";
 
-    private void updateWoundRecord(){
-
+    private void updateWoundRecord() {
+        // Display loading animation while making calls to Firestore collection
         registerProgressBar.setVisibility(View.VISIBLE);
 
-        // Create a Hash map to update relevant document with new bandage id
+        // Create a Hash map to update relevant document in collection with new bandage ID
         final Map<String, Object> updateData = new HashMap<>();
+        // Put the new bandage ID got from the QR code and the new date into the map
         updateData.put(KEY_BANDAGE_ID, bandageId);
         updateData.put(KEY_DATE_CHANGED, new Timestamp(new Date()));
 
+        // Make call to collection and get the relevant document
         collectionReference
                 .whereEqualTo("woundId", woundId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful()){
-                            for(QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())){
-
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
                                 collectionReference
                                         .document(document.getId())
                                         .update(updateData)
@@ -652,16 +654,14 @@ public class ProcessImageActivity extends AppCompatActivity {
                                         });
                             }
                         }
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        Log.d(TAG, "onFailure: " + e.toString());
                     }
                 });
-
     }
 
     @Override

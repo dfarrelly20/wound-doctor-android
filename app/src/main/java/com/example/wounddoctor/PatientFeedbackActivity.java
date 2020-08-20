@@ -3,7 +3,6 @@ package com.example.wounddoctor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,7 +29,6 @@ import java.util.Date;
 
 import model.PatientImage;
 import util.PatientManager;
-import util.ProcessImage;
 
 public class PatientFeedbackActivity extends AppCompatActivity {
 

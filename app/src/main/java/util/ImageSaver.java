@@ -35,7 +35,7 @@ public class ImageSaver implements Runnable {
             e.printStackTrace();
         } finally {
             mImage.close();
-            if (fileOutputStream != null){
+            if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
