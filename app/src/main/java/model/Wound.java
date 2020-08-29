@@ -30,25 +30,27 @@ public class Wound {
     private Timestamp date;
 
     /**
-     * The date that the wound was last checked
-     */
-    private Timestamp lastChecked;
-
-    /**
      * The number of hours between each health check for this wound
      */
     private int hoursUntilCheck;
 
+    private Timestamp bandageLastChanged;
+
+    private Timestamp nextHealthCheck;
+
     public Wound() {
     }
 
-    public Wound(String woundId, String userId, String limbName, String bandageId, Timestamp date, int hoursUntilCheck) {
+    public Wound(String woundId, String userId, String limbName, String bandageId, Timestamp date,
+                 int hoursUntilCheck, Timestamp bandageLastChanged, Timestamp nextHealthCheck) {
         this.woundId = woundId;
         this.userId = userId;
         this.limbName = limbName;
         this.bandageId = bandageId;
         this.date = date;
         this.hoursUntilCheck = hoursUntilCheck;
+        this.bandageLastChanged = bandageLastChanged;
+        this.nextHealthCheck = nextHealthCheck;
     }
 
     public String getWoundId() {
@@ -97,5 +99,21 @@ public class Wound {
 
     public void setHoursUntilCheck(int hoursUntilCheck) {
         this.hoursUntilCheck = hoursUntilCheck;
+    }
+
+    public Timestamp getBandageLastChanged() {
+        return bandageLastChanged;
+    }
+
+    public void setBandageLastChanged(Timestamp bandageLastChanged) {
+        this.bandageLastChanged = bandageLastChanged;
+    }
+
+    public Timestamp getNextHealthCheck() {
+        return nextHealthCheck;
+    }
+
+    public void setNextHealthCheck(Timestamp nextHealthCheck) {
+        this.nextHealthCheck = nextHealthCheck;
     }
 }

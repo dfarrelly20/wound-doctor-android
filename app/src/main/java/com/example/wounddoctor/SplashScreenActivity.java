@@ -56,7 +56,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                                                     @Nullable FirebaseFirestoreException error) {
 
                                     if (error != null){
-
                                     }
 
                                     String name;

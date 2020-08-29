@@ -178,7 +178,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         if (extra != null) {
             actionRequested = extra.getInt("action requested");
             limbName = extra.getString("limb name");
-            woundId = extra.getString("wound id");
+            woundId = extra.getString("woundId");
         }
 
 
@@ -344,10 +344,10 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     // Need to refresh gallery after adding image in gallery.
                     // Tell the media scanner about the new file so that it is
                     // immediately available to the user in the phone's gallery app.
-                    MediaScannerConnection.scanFile(getApplicationContext(),
-                            new String[]{file.getPath()},
-                            new String[]{"image/jpeg"},
-                            null);
+//                    MediaScannerConnection.scanFile(getApplicationContext(),
+//                            new String[]{file.getPath()},
+//                            new String[]{"image/jpeg"},
+//                            null);
 
                     if (actionRequested == Constants.REQUEST_CAMERA_ACTION) {
                         Intent sendPictureToProcess = new Intent(CameraActivity.this,
@@ -463,7 +463,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
-
             cameraDevice.createCaptureSession(Arrays.asList(surface),
                     new CameraCaptureSession.StateCallback() {
                         @Override
@@ -473,7 +472,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             cameraCaptureSessions = cameraCaptureSession;
                             updatePreview();
                         }
-
                         @Override
                         public void onConfigureFailed(@NonNull CameraCaptureSession session) {
                             Log.i(TAG, "Changed configuration");
@@ -491,7 +489,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE,
                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-        captureRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 10);
+        captureRequestBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 5);
 
         // captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON);
         // captureRequestBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_TWILIGHT);

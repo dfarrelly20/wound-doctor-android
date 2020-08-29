@@ -53,9 +53,7 @@
                         android:text="@string/create_account_confirm_id_text" />
 
                 </LinearLayout>
-
             </androidx.cardview.widget.CardView>
-
 
             <EditText
                 android:id="@+id/createAccount_PatientIdEditText"
@@ -94,14 +92,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/createAccount_SecondTextView"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:layout_marginBottom="30dp"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/create_account_thank_you_text" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:paddingRight="10dp"
+                        android:src="@android:drawable/ic_menu_info_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/createAccount_SecondTextView"
+                        android:textSize="18sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/create_account_thank_you_text" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
             <EditText
                 android:id="@+id/createAccount_FNameEditText"
@@ -109,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:hint="@string/create_account_first_name_hint"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapSentences"
                 android:maxLines="1" />
 
             <EditText
@@ -118,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:hint="@string/create_account_last_name_hint"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapSentences"
                 android:maxLines="1" />
 
             <EditText
@@ -137,6 +152,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:hint="@string/login_password_hint"
+                android:inputType="textPassword"
+                android:maxLines="1" />
+
+            <EditText
+                android:id="@+id/createAccount_ConfirmPasswordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:hint="@string/create_account_confirm_password_hint"
                 android:inputType="textPassword"
                 android:maxLines="1" />
 

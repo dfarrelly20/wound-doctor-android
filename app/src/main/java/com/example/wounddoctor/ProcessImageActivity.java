@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,11 +41,13 @@ import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import model.Wound;
 import util.Constants;
@@ -64,9 +68,12 @@ public class ProcessImageActivity extends AppCompatActivity {
     private TextView greenTextView;
     private TextView blueTextView;
     private TextView textView;
-    private ProgressBar registerProgressBar;
+    // private ProgressBar registerProgressBar;
+    private LinearLayout progressLayout;
+    private LinearLayout registerSuccessLayout;
+    private Button initialCheckButton;
 
-    private ImageView imageView;
+    //private ImageView imageView;
     private String imageFromCameraResult;
     private Bitmap bitmap;
     private Point[] qrCorners;
@@ -77,10 +84,13 @@ public class ProcessImageActivity extends AppCompatActivity {
     private int referenceXPosition;
     private int referenceYPosition;
 
-    FirebaseVisionBarcodeDetectorOptions options = new FirebaseVisionBarcodeDetectorOptions.Builder()
+    FirebaseVisionBarcodeDetectorOptions options = new FirebaseVisionBarcodeDetectorOptions
+            .Builder()
             .setBarcodeFormats(FirebaseVisionBarcode.FORMAT_QR_CODE)
             .build();
-    FirebaseVisionBarcodeDetector detector = FirebaseVision.getInstance().getVisionBarcodeDetector(options);
+    FirebaseVisionBarcodeDetector detector = FirebaseVision
+            .getInstance()
+            .getVisionBarcodeDetector(options);
     FirebaseVisionImage firebaseVisionImage;
     double rotationRequired;
 
@@ -112,21 +122,16 @@ public class ProcessImageActivity extends AppCompatActivity {
             }
         };
 
-        // UI views
+        // UI elements
         textView = findViewById(R.id.processImage_TextView);
         redTextView = findViewById(R.id.processImage_RedTextView);
         greenTextView = findViewById(R.id.processImage_GreenTextView);
         blueTextView = findViewById(R.id.processImage_BlueTextView);
-        imageView = findViewById(R.id.processImage_ImageView);
-        registerProgressBar = findViewById(R.id.processImage_RegisterProgressBar);
-
-        // For screen dimensions
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-        Log.d(TAG, "onCreate: heigth: " + height);
-        Log.d(TAG, "onCreate: width: " + width);
+        //imageView = findViewById(R.id.processImage_ImageView);
+        progressLayout = findViewById(R.id.processImage_ProgressLayout);
+        registerSuccessLayout = findViewById(R.id.processImage_RegisterSuccessLayout);
+        initialCheckButton = findViewById(R.id.processImage_InitialCheckButton);
+        // registerProgressBar = findViewById(R.id.processImage_RegisterProgressBar);
 
         // Collecting data passed into activity
         Bundle extra = getIntent().getExtras();
@@ -134,14 +139,13 @@ public class ProcessImageActivity extends AppCompatActivity {
             // Get the requested action
             actionRequested = extra.getInt("action requested");
             limbName = extra.getString("limb name");
-            woundId = extra.getString("wound id");
+            woundId = extra.getString("woundId");
             imageFromCameraResult = extra.getString("image captured");
 
             bitmap = BitmapFactory.decodeFile(imageFromCameraResult);
             bitmap = rotateImage(bitmap);
-            imageView.setImageBitmap(bitmap);
+            //imageView.setImageBitmap(bitmap);
             firebaseVisionImage = FirebaseVisionImage.fromBitmap(bitmap);
-            // bitmap = getResizedBitmap(bitmap, height);
 
             processImage(firebaseVisionImage);
         }
@@ -159,7 +163,9 @@ public class ProcessImageActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(ProcessImageActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProcessImageActivity.this,
+                                "" + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -192,9 +198,9 @@ public class ProcessImageActivity extends AppCompatActivity {
                             assert qrCorners != null;
                             // Calculate how much the image needs to be rotated so that the QR code
                             // is aligned correctly
-                            rotationRequired = getCorners(qrCorners);
+                            rotationRequired = calculateRotation(qrCorners);
                             // Rotate the image view
-                            imageView.setRotation((float) rotationRequired);
+                            //imageView.setRotation((float) rotationRequired);
                             // Rotate the bitmap holding the image by the required amount
                             bitmap = rotateBitmap(bitmap, (float) rotationRequired);
                             // Reset the firebase vision image to the newly rotated bitmap
@@ -205,7 +211,8 @@ public class ProcessImageActivity extends AppCompatActivity {
                         } else if (imageProcessedCount == 2) {
                             // Find the new coordinates of the QR code on the rotated image
                             qrCorners = item.getCornerPoints();
-                            findColour3(qrCorners);
+                            // Pass these coordinates into this method to find the colour
+                            findColourOnBitmap(qrCorners);
                         }
                         break;
                     case Constants.REQUEST_REGISTER_WOUND:
@@ -220,117 +227,65 @@ public class ProcessImageActivity extends AppCompatActivity {
             }
         } else {
             // Here if the QR code could not be read -- the image was of insufficient quality
-            // Finish this activity and revert to the CameraActivity
+            // Finish this activity and revert to the CameraActivity for another image
             finish();
             // Inform the user of the problem and request another image
             Toast.makeText(this, "Could not read QR code", Toast.LENGTH_LONG).show();
         }
     }
 
-    private double getCorners(Point[] corners) {
-
-        int[] x = {
-                corners[0].x,
-                corners[1].x,
-                corners[2].x,
-                corners[3].x
-        };
-
-        int[] y = {
-                corners[0].y,
-                corners[1].y,
-                corners[2].y,
-                corners[3].y
-        };
-
-        Log.d(TAG, "x array: " + Arrays.toString(x));
-        Log.d(TAG, "y array: " + Arrays.toString(y));
+    private double calculateRotation(Point[] corners) {
+        // Array holds the x coordinate values of the QR code
+        int[] x = {corners[0].x, corners[1].x, corners[2].x, corners[3].x};
+        // Array holds the y coordinate values of the QR code
+        int[] y = {corners[0].y, corners[1].y, corners[2].y, corners[3].y};
 
         double shortSide;
-        double longSide;
-        double base;
-        double diagonal;
-        double acuteAngle = 0;
+        double acuteAngle;
         double rotationRequired = 0;
 
-        base = x[1] - x[0];
-        Log.d(TAG, "base: " + base);
-
+        // Calculate the long and short sides of the trapezoid
         if (y[0] < y[1]) {
             shortSide = y[0];
-            longSide = y[1];
         } else {
             shortSide = y[1];
-            longSide = y[0];
         }
-
-        Log.d(TAG, "short side: " + shortSide);
-        Log.d(TAG, "long side: " + longSide);
-
-        // Calculate diagonal of trapezoid
-        diagonal = Math.sqrt(Math.pow(longSide - shortSide, 2) + Math.pow(base, 2));
-        Log.d(TAG, "diagonal: " + diagonal);
-
-        // Calculating acute angle
-        // Need to find which is long side of trapezoid first
+        // Calculating the acute angle of trapezoid
+        // Need to find which is short side of trapezoid first
         if (shortSide == y[0]) {
-            double angle1 = Math.atan2(0 - y[1],
-                    x[1] - x[1]);
-            double angle2 = Math.atan2(y[0] - y[1],
-                    x[0] - x[1]);
-            Log.d(TAG, "angle1: " + angle1);
-            Log.d(TAG, "angle2: " + angle2);
+            double angle1 = Math.atan2(0 - y[1], 0);
+            double angle2 = Math.atan2(y[0] - y[1], x[0] - x[1]);
             acuteAngle = angle1 - angle2;
             rotationRequired = -(90 - Math.toDegrees(acuteAngle));
         } else if (shortSide == y[1]) {
-            double angle1 = Math.atan2(0 - y[0],
-                    x[0] - x[0]);
-            double angle2 = Math.atan2(y[1] - y[0],
-                    x[1] - x[0]);
-            Log.d(TAG, "angle1: " + angle1);
-            Log.d(TAG, "angle2: " + angle2);
+            double angle1 = Math.atan2(0 - y[0], 0);
+            double angle2 = Math.atan2(y[1] - y[0], x[1] - x[0]);
             acuteAngle = angle2 - angle1;
             rotationRequired = 90 - Math.toDegrees(acuteAngle);
         }
-
-        Log.d(TAG, "acute: " + acuteAngle);
-        Log.d(TAG, "rotationRequired: " + rotationRequired);
-
         return rotationRequired;
     }
 
-    private void findColour3(Point[] corners) {
+    private void findColourOnBitmap(Point[] corners) {
+        // Array holds the x coordinate values of the QR code
+        int[] x = {qrCorners[0].x, qrCorners[1].x, qrCorners[2].x, qrCorners[3].x};
+        // Array holds the y coordinate values of the QR code
+        int[] y = {qrCorners[0].y, qrCorners[1].y, qrCorners[2].y, qrCorners[3].y};
 
-        int[] x = {
-                qrCorners[0].x,
-                qrCorners[1].x,
-                qrCorners[2].x,
-                qrCorners[3].x,
-        };
+        boxWidth = (x[1] - x[0]) * 5;
+        int hypotenuse = (int) (Math.sqrt(2) * boxWidth) / 2;
+        int sides = (int) Math.sqrt((Math.pow(hypotenuse, 2)) / 2);
 
-        int[] y = {
-                qrCorners[0].y,
-                qrCorners[1].y,
-                qrCorners[2].y,
-                qrCorners[3].y
-        };
-
-        Log.d(TAG, "Corner points: " + corners[0]);
-        Log.d(TAG, "Corner points: " + corners[1]);
-        Log.d(TAG, "Corner points: " + corners[2]);
-        Log.d(TAG, "Corner points: " + corners[3]);
-
-        int sides = createBox(x, y);
-
-        switch (checkQRPosition(x, y)) {
+        // Check which quarter of the screen the QR code is in
+        switch (Objects.requireNonNull(checkQRPosition(x, y))) {
             case TOP_LEFT:
                 Log.d(TAG, "top left");
                 colourXPosition = sides + x[0];
                 colourYPosition = sides + y[0];
-                // referenceXPosition = (int) (x[0] + (boxWidth * 0.03));
-                // referenceYPosition = (int) (y[0] + (boxHeight - (boxWidth * 0.03)));
                 referenceXPosition = (x[0] + 100);
-                referenceYPosition = (y[0] + (boxHeight - 50));
+                referenceYPosition = (y[0] + (boxWidth - 100));
+                calculateColourValue(colourXPosition, colourYPosition, referenceXPosition,
+                        referenceYPosition);
                 break;
             case TOP_RIGHT:
                 Log.d(TAG, "top right");
@@ -338,6 +293,8 @@ public class ProcessImageActivity extends AppCompatActivity {
                 colourYPosition = y[1] + sides;
                 referenceXPosition = x[1] - (boxWidth - 100);
                 referenceYPosition = y[1] + 100;
+                calculateColourValue(colourXPosition, colourYPosition, referenceXPosition,
+                        referenceYPosition);
                 break;
             case BOTTOM_LEFT:
                 Log.d(TAG, "bottom left");
@@ -345,6 +302,8 @@ public class ProcessImageActivity extends AppCompatActivity {
                 colourYPosition = y[3] - sides;
                 referenceXPosition = x[3] + (boxWidth - 100);
                 referenceYPosition = y[3] - 100;
+                calculateColourValue(colourXPosition, colourYPosition, referenceXPosition,
+                        referenceYPosition);
                 break;
             case BOTTOM_RIGHT:
                 Log.d(TAG, "bottom right");
@@ -352,113 +311,65 @@ public class ProcessImageActivity extends AppCompatActivity {
                 colourYPosition = y[2] - sides;
                 referenceXPosition = x[2] - 100;
                 referenceYPosition = y[2] - (boxHeight - 100);
+                calculateColourValue(colourXPosition, colourYPosition, referenceXPosition,
+                        referenceYPosition);
                 break;
             default:
                 break;
         }
+    }
 
-        // int[] rotatedPoint = findRotatedPoint(colourXPosition, colourYPosition);
-        // int[] rotatedReference = findRotatedPoint(referenceXPosition, referenceYPosition);
+    private void calculateColourValue(int colourXPosition, int colourYPosition,
+                                      int referenceXPosition, int referenceYPosition){
 
-        // float[] hsv = findRawColour(rotatedPoint[0], rotatedPoint[1]);
         float[] hsv = findRawColour(colourXPosition, colourYPosition);
-
-        // int referenceColour = bitmap.getPixel(rotatedReference[0], rotatedReference[1]);
         float[] offset = checkReferenceOffset(referenceXPosition, referenceYPosition);
 
-        Log.d(TAG, "hsv offset: " + Arrays.toString(offset));
+        float[] trueRGB = new float[3];
+        trueRGB[0] = hsv[0] + offset[0];
+        trueRGB[1] = hsv[1] + offset[1];
+        trueRGB[2] = hsv[2] + offset[2];
 
-        float[] newRGB = new float[3];
-        newRGB[0] = hsv[0] + offset[0];
-        newRGB[1] = hsv[1] + offset[1];
-        newRGB[2] = hsv[2] + offset[2];
+        // Using bitwise to get more accurate RGB values
+        int trueColour = Color.HSVToColor(trueRGB);
+        int trueRed = (trueColour >> 16) & 0xFF;
+        int trueGreen = (trueColour >> 8) & 0xFF;
+        int trueBlue = trueColour & 0xFF;
 
-        int newColour = Color.HSVToColor(newRGB);
-        int newRed = (newColour >> 16) & 0xFF;
-        int newGreen = (newColour >> 8) & 0xFF;
-        int newBlue = newColour & 0xFF;
-
-        // createMarker(rotatedPoint[0], rotatedPoint[1]);
-        createMarker(colourXPosition, colourYPosition);
-        // textView.setText("@");
-        // textView.setX(colourXPosition);
-        // textView.setY(colourYPosition);
-        // setText(newRed, newGreen, newBlue);
-
-    }
-
-    private int createBox(int[] x, int[] y) {
-        int qrWidth = x[1] - x[0];
-        int qrHeight = y[2] - y[1];
-
-        Log.d(TAG, "qr width: " + qrWidth);
-        Log.d(TAG, "qr height: " + qrHeight);
-
-        boxWidth = qrWidth * 5;
-        boxHeight = qrHeight * 5;
-
-        int diagonal = (int) (Math.sqrt(2) * boxWidth);
-        int hypotenuse = diagonal / 2;
-        int sides = pythagoras(hypotenuse);
-
-        return sides;
-    }
-
-    private int pythagoras(int hypotenuse) {
-        int sides;
-        sides = (int) Math.sqrt((Math.pow(hypotenuse, 2)) / 2);
-        return sides;
-    }
-
-    private Quarter checkQRPosition(int[] x, int[] y) {
-
-        if (x[0] < bitmap.getWidth() / 2 && (y[0] < bitmap.getHeight() / 2)) {
-            return Quarter.TOP_LEFT;
-        } else if (x[0] > bitmap.getWidth() / 2 && (y[0] < bitmap.getHeight() / 2)) {
-            return Quarter.TOP_RIGHT;
-        } else if ((x[0] < bitmap.getWidth() / 2) && (y[0] > bitmap.getHeight() / 2)) {
-            return Quarter.BOTTOM_LEFT;
-        } else if ((x[0] > bitmap.getWidth() / 2) && (y[0] > bitmap.getHeight() / 2)) {
-            return Quarter.BOTTOM_RIGHT;
-        } else {
-            return null;
-        }
+        // createMarker(referenceXPosition, referenceYPosition);
+        // setText(trueRed, trueGreen, trueBlue);
+        startActivity(new Intent(ProcessImageActivity.this,
+                PatientFeedbackActivity.class)
+                .putExtra("image captured", imageFromCameraResult)
+                .putExtra("redValue", trueRed)
+                .putExtra("greenValue", trueGreen)
+                .putExtra("blueValue", trueBlue)
+                .putExtra("bandageId", bandageId)
+                .putExtra("woundId", woundId)
+        );
     }
 
     private float[] findRawColour(int findColourX, int findColourY) {
-
+        // Find the raw rgb value of the pixel at the found position
         int colour = bitmap.getPixel(findColourX, findColourY);
-
-        Log.d(TAG, "find colour bitmap width: " + bitmap.getWidth());
-        Log.d(TAG, "find colour bitmap height: " + bitmap.getHeight());
-
         int red = (colour >> 16) & 0xFF;
         int green = (colour >> 8) & 0xFF;
         int blue = colour & 0xFF;
 
-        setText(red, green, blue);
-
-        Log.d("RGB at found position", "rgb : " + red + ", " + green + ", " + blue);
-
-        float[] hsv = convertToHSV(red, green, blue);
-
-        return hsv;
-    }
-
-    private float[] convertToHSV(int red, int green, int blue) {
-        float[] hsv = new float[3];
-        Color.RGBToHSV(red, green, blue, hsv);
-        return hsv;
+        // Convert the raw rgb value to hsv and store in an array
+        float[] rawHSVFound = new float[3];
+        Color.RGBToHSV(red, green, blue, rawHSVFound);
+        return rawHSVFound;
     }
 
     private float[] checkReferenceOffset(int findReferenceX, int findReferenceY) {
-
+        // Find the rgb value of the reference colour on the image
         int colour = bitmap.getPixel(findReferenceX, findReferenceY);
-
         int refRed = (colour >> 16) & 0xFF;
         int refGreen = (colour >> 8) & 0xFF;
         int refBlue = colour & 0xFF;
 
+        // Convert reference to hsv
         float[] refHsv = new float[3];
         Color.RGBToHSV(refRed, refGreen, refBlue, refHsv);
 
@@ -477,116 +388,42 @@ public class ProcessImageActivity extends AppCompatActivity {
 
         Log.d("RGB at reference", "rgb : " + refRed + ", " + refGreen + ", " + refBlue);
         Log.d("RGB offset at reference", "rgb : " + offset[0] + ", " + offset[1] + ", " + offset[2]);
-
         return offset;
-
     }
-
-    private void setText(int red, int green, int blue) {
-        redTextView.setText("Red: " + red);
-        greenTextView.setText("Green: " + green);
-        blueTextView.setText("Blue:" + blue);
-    }
-
-    private void createMarker(int findColourX, int findColourY) {
-        float[] point = new float[2];
-        point[0] = findColourX;
-        point[1] = findColourY;
-        imageView.getImageMatrix().mapPoints(point);
-        textView.setX(point[0]);
-        textView.setY(point[1]);
-        textView.setText("@");
-        textView.setTextColor(Color.RED);
-    }
-
-    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-
-        float bitmapRatio = (float) width / (float) height;
-        if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
-        } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
-        }
-        Log.d("Reduced dimensions", "Width, height: " + width + ", " + height);
-
-        return Bitmap.createScaledBitmap(image, width, height, true);
-    }
-
-    public static Bitmap rotateBitmap(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        // matrix.setRotate(angle);
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
-
-    private Bitmap rotateImage(Bitmap bitmap) {
-
-        ExifInterface exifInterface = null;
-
-        try {
-            exifInterface = new ExifInterface(imageFromCameraResult);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED);
-
-        Matrix matrix = new Matrix();
-
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                matrix.setRotate(90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                matrix.setRotate(180);
-                break;
-            default:
-        }
-
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                bitmap.getHeight(), matrix, true);
-
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(imageFromCameraResult, bmOptions);
-
-        return rotatedBitmap;
-
-    }
-
-    enum Quarter {
-        TOP_LEFT,
-        TOP_RIGHT,
-        BOTTOM_LEFT,
-        BOTTOM_RIGHT,
-    }
-
+    
     private void registerWound() {
         // Display loading animation while making calls to Firestore collection
-        registerProgressBar.setVisibility(View.VISIBLE);
+        // registerProgressBar.setVisibility(View.VISIBLE);
 
         // Get the ID of the logged in user from the singleton class
         String userId = PatientManager.getInstance().getPatientId();
         // Create a unique ID for the new wound combining the user's ID and the current time
-        String woundId = userId + "_" + Timestamp.now().getSeconds();
+        final String newWoundId = userId + "_" + Timestamp.now().getSeconds();
+
+        Timestamp today = new Timestamp(new Date());
 
         // Create the Wound object to be added to the collection
         Wound wound = new Wound();
+        // Set the patient who registered the wound
         wound.setUserId(userId);
         // Bandage ID comes from the value read from the QR code
         wound.setBandageId(bandageId);
         // Limb name is passed in from the LimbListActivity
         wound.setLimbName(limbName);
-        wound.setDate(new Timestamp(new Date()));
-        wound.setWoundId(woundId);
+        // Set the date that the wound was registered
+        wound.setDate(today);
+        // Set the new wounds ID
+        wound.setWoundId(newWoundId);
         // Each new wound will require an update picture once a day
         wound.setHoursUntilCheck(24);
+        // Set the date when the bandage was changed -- today
+        wound.setBandageLastChanged(today);
+
+        Calendar date = Calendar.getInstance();
+        long t = date.getTimeInMillis();
+        Date afterAddOneDay = new Date(t + (24 * 3600000));
+        Timestamp timestamp = new Timestamp(afterAddOneDay);
+        wound.setNextHealthCheck(timestamp);
 
         // Add the wound to the collection
         collectionReference.add(wound)
@@ -594,12 +431,22 @@ public class ProcessImageActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         // Call to Firestore is complete - hide progress bar
-                        registerProgressBar.setVisibility(View.INVISIBLE);
-                        // Return the user to the MyWoundsActivity
-                        startActivity(new Intent(ProcessImageActivity.this,
-                                MyWoundsActivity.class));
-                        // End the current activity so the user can not return
-                        finish();
+                        // registerProgressBar.setVisibility(View.INVISIBLE);
+                        progressLayout.setVisibility(View.INVISIBLE);
+                        registerSuccessLayout.setVisibility(View.VISIBLE);
+
+                        initialCheckButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // Return the user to the MyWoundsActivity
+                                startActivity(new Intent(ProcessImageActivity.this,
+                                        CameraActivity.class)
+                                        .putExtra("woundId", newWoundId)
+                                        .putExtra("action requested", Constants.REQUEST_CAMERA_ACTION));
+                                // End the current activity so the user can not return
+                                finish();
+                            }
+                        });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -610,6 +457,8 @@ public class ProcessImageActivity extends AppCompatActivity {
                 });
     }
 
+
+
     // Key relating to the field bandageId in the wounds collection
     public static final String KEY_BANDAGE_ID = "bandageId";
     // Key relating to the field date in the wounds collection
@@ -617,7 +466,7 @@ public class ProcessImageActivity extends AppCompatActivity {
 
     private void updateWoundRecord() {
         // Display loading animation while making calls to Firestore collection
-        registerProgressBar.setVisibility(View.VISIBLE);
+        // registerProgressBar.setVisibility(View.VISIBLE);
 
         // Create a Hash map to update relevant document in collection with new bandage ID
         final Map<String, Object> updateData = new HashMap<>();
@@ -640,7 +489,7 @@ public class ProcessImageActivity extends AppCompatActivity {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                registerProgressBar.setVisibility(View.INVISIBLE);
+                                                // registerProgressBar.setVisibility(View.INVISIBLE);
                                                 startActivity(new Intent(ProcessImageActivity.this,
                                                         MyWoundsActivity.class));
                                                 finish();
@@ -664,6 +513,62 @@ public class ProcessImageActivity extends AppCompatActivity {
                 });
     }
 
+    private Quarter checkQRPosition(int[] x, int[] y) {
+        if (x[0] < bitmap.getWidth() / 2 && (y[0] < bitmap.getHeight() / 2)) {
+            return Quarter.TOP_LEFT;
+        } else if (x[0] > bitmap.getWidth() / 2 && (y[0] < bitmap.getHeight() / 2)) {
+            return Quarter.TOP_RIGHT;
+        } else if ((x[0] < bitmap.getWidth() / 2) && (y[0] > bitmap.getHeight() / 2)) {
+            return Quarter.BOTTOM_LEFT;
+        } else if ((x[0] > bitmap.getWidth() / 2) && (y[0] > bitmap.getHeight() / 2)) {
+            return Quarter.BOTTOM_RIGHT;
+        } else {
+            return null;
+        }
+    }
+
+    public static Bitmap rotateBitmap(Bitmap source, float angle) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    private Bitmap rotateImage(Bitmap bitmap) {
+        ExifInterface exifInterface = null;
+        try {
+            exifInterface = new ExifInterface(imageFromCameraResult);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
+
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            default:
+        }
+
+        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                bitmap.getHeight(), matrix, true);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imageFromCameraResult, bmOptions);
+        return rotatedBitmap;
+    }
+
+    enum Quarter {
+        TOP_LEFT,
+        TOP_RIGHT,
+        BOTTOM_LEFT,
+        BOTTOM_RIGHT,
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -679,6 +584,25 @@ public class ProcessImageActivity extends AppCompatActivity {
         if (firebaseAuth != null) {
             firebaseAuth.removeAuthStateListener(authStateListener);
         }
+    }
+
+    // Methods that can be deleted when finished
+
+    private void setText(int red, int green, int blue) {
+        redTextView.setText("Red: " + red);
+        greenTextView.setText("Green: " + green);
+        blueTextView.setText("Blue:" + blue);
+    }
+
+    private void createMarker(int findColourX, int findColourY) {
+        float[] point = new float[2];
+        point[0] = findColourX;
+        point[1] = findColourY;
+        //imageView.getImageMatrix().mapPoints(point);
+        textView.setX(point[0]);
+        textView.setY(point[1]);
+        textView.setText("@");
+        textView.setTextColor(Color.RED);
     }
 
 }

@@ -7,12 +7,12 @@
     tools:context=".ProcessImageActivity">
 
     <ProgressBar
-        android:visibility="invisible"
-        android:layout_centerInParent="true"
         android:id="@+id/processImage_RegisterProgressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/processImage_ImageView"
@@ -55,27 +55,75 @@
     </LinearLayout>
 
     <LinearLayout
-        android:background="@android:color/holo_blue_light"
-        android:visibility="invisible"
+        android:id="@+id/processImage_ProgressLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        >
 
         <ProgressBar
-            android:layout_gravity="center"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:text="Processing your image..."
-            android:textSize="24sp"
-            android:textColor="@android:color/background_light"
             android:gravity="center"
+            android:text="Processing your image..."
+            android:textSize="24sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/processImage_RegisterSuccessLayout"
+        android:visibility="invisible"
+        android:padding="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:text="Success!"
+            android:textSize="28sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="Your wound has been registered."
+            android:textSize="20sp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="You are now required to provide information on the initial health of the wound by taking another image of the bandage. "
+            android:textSize="17sp"
+            android:layout_marginBottom="14dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="Click the 'Initial Check' button below to proceed. When the camera opens, take a picture of your bandage incorporating the area bounded by the red box."
+            android:textSize="17sp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <Button
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/processImage_InitialCheckButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Initial Check"
+            android:background="@android:color/transparent"
+            android:textColor="@color/colorPrimary"/>
 
     </LinearLayout>
 

@@ -3,18 +3,15 @@ package view;
 import android.content.Context;
 import android.content.Intent;
 import android.text.format.DateFormat;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wounddoctor.CameraActivity;
-import com.example.wounddoctor.MyWoundsActivity;
 import com.example.wounddoctor.R;
 
 import java.util.Calendar;
@@ -61,12 +58,16 @@ public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecycl
         PatientManager currentUser = PatientManager.getInstance();
 
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
-        cal.setTimeInMillis(wound.getDate().getSeconds() * 1000);
-        String dateChanged = DateFormat.format("EEEE, dd MMMM", cal).toString();
+        cal.setTimeInMillis(wound.getBandageLastChanged().getSeconds() * 1000);
+        // String dateChanged = DateFormat.format("EEEE, dd MMMM", cal).toString();
+        String dateChanged = DateFormat.format("EE, dd MMM", cal).toString();
+
+        cal.setTimeInMillis(wound.getNextHealthCheck().getSeconds() * 1000);
+        String nextHealthCheck = DateFormat.format("h:mma, EE, dd MMM", cal).toString();
 
         holder.limbName.setText(wound.getLimbName());
-        holder.date.append(dateChanged);
-        holder.nextHealthCheck.append(String.valueOf(wound.getHoursUntilCheck()));
+        holder.bandageChanged.append(dateChanged);
+        holder.nextHealthCheck.append(nextHealthCheck);
         holder.userId = currentUser.getPatientId();
         holder.woundId = wound.getWoundId();
         holder.bandageId = wound.getBandageId();
@@ -79,7 +80,7 @@ public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecycl
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView limbName, date, nextHealthCheck;
+        public TextView limbName, bandageChanged, nextHealthCheck;
         public String woundId;
         public String userId;
         public String bandageId;
@@ -91,7 +92,7 @@ public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecycl
             context = ctx;
 
             limbName = itemView.findViewById(R.id.myWoundsRow_LimbNameTextView);
-            date = itemView.findViewById(R.id.myWoundsRow_DateTextView);
+            bandageChanged = itemView.findViewById(R.id.myWoundsRow_DateTextView);
             nextHealthCheck = itemView.findViewById(R.id.myWoundsRow_NextCheckTextView);
 
             changeBandageButton = itemView.findViewById(R.id.myWoundsRow_ChangeTextView);
@@ -101,7 +102,7 @@ public class MyWoundsRecyclerAdapter extends RecyclerView.Adapter<MyWoundsRecycl
                     context.startActivity(new Intent(context,
                             CameraActivity.class)
                             .putExtra("action requested", Constants.REQUEST_UPDATE_BANDAGE)
-                            .putExtra("wound id", woundId));
+                            .putExtra("woundId", woundId));
                 }
             });
         }

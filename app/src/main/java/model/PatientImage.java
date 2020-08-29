@@ -1,30 +1,40 @@
 package model;
 
-import android.graphics.Bitmap;
-import android.graphics.Point;
-
 import com.google.firebase.Timestamp;
 
 public class PatientImage {
 
     private String userId;
+    private String woundId;
     private int red;
     private int green;
     private int blue;
     private String imageUrl;
-    private String qrId;
+    private String bandageId;
     private Timestamp date;
+    private double woundChangeSinceLast;
 
     public PatientImage(){}
 
-    public PatientImage(String userId, int red, int green, int blue, String imageUrl, String qrId, Timestamp date) {
+    public PatientImage(String userId, String woundId, int red, int green, int blue, String imageUrl,
+                        String bandageId, Timestamp date, double woundChangeSinceLast) {
         this.userId = userId;
+        this.woundId = woundId;
         this.red = red;
         this.green = green;
         this.blue = blue;
         this.imageUrl = imageUrl;
-        this.qrId = qrId;
+        this.bandageId = bandageId;
         this.date = date;
+        this.woundChangeSinceLast = woundChangeSinceLast;
+    }
+
+    public String getWoundId() {
+        return woundId;
+    }
+
+    public void setWoundId(String woundId) {
+        this.woundId = woundId;
     }
 
     public String getUserId() {
@@ -67,12 +77,12 @@ public class PatientImage {
         this.imageUrl = imageUrl;
     }
 
-    public String getQrId() {
-        return qrId;
+    public String getBandageId() {
+        return bandageId;
     }
 
-    public void setQrId(String qrId) {
-        this.qrId = qrId;
+    public void setBandageId(String bandageId) {
+        this.bandageId = bandageId;
     }
 
     public Timestamp getDate() {
@@ -81,5 +91,13 @@ public class PatientImage {
 
     public void setDate(Timestamp date) {
         this.date = date;
+    }
+
+    public double getWoundChangeSinceLast() {
+        return woundChangeSinceLast;
+    }
+
+    public void setWoundChangeSinceLast(double woundChangeSinceLast) {
+        this.woundChangeSinceLast = woundChangeSinceLast;
     }
 }

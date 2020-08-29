@@ -48,19 +48,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private FirebaseUser currentUser;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference collectionReference = db.collection("patients");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try{
-            this.getSupportActionBar().hide();
-        } catch (NullPointerException e){
-        }
+        Objects.requireNonNull(this.getSupportActionBar()).hide();
+
         setContentView(R.layout.activity_login);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -93,60 +89,49 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void loginPatientWithEmail(String email, String password) {
-
         progressBar.setVisibility(View.VISIBLE);
         if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
-
             firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
                         if (task.isSuccessful()){
                             currentUser = firebaseAuth.getCurrentUser();
                             assert currentUser != null;
                             String currentUserId = currentUser.getUid();
-
                             collectionReference
                                     .whereEqualTo("patientId", currentUserId)
                                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                         @Override
                                         public void onEvent(@Nullable QuerySnapshot value,
                                                             @Nullable FirebaseFirestoreException error) {
-
                                             if (error != null){
                                             }
-
                                             assert value != null;
                                             if (!value.isEmpty()){
-
                                                 progressBar.setVisibility(View.INVISIBLE);
-
                                                 for (QueryDocumentSnapshot snapshot : value){
                                                     PatientManager patientManager = PatientManager.getInstance();
                                                     patientManager.setPatientId(snapshot.getString("patientId"));
                                                     patientManager.setPatientName(snapshot.getString("fName"));
-
                                                     // Go to MainActivity
                                                     startActivity(new Intent(LoginActivity.this,
                                                             MainActivity.class));
                                                     finish();
                                                 }
-
                                             }
-
                                         }
                                     });
                         } else {
                             try {
                                 throw Objects.requireNonNull(task.getException());
                             } catch (FirebaseAuthInvalidUserException e) {
-                                Toast.makeText(LoginActivity.this, "Please enter a valid email.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                             } catch (FirebaseAuthInvalidCredentialsException e) {
-                                Toast.makeText(LoginActivity.this, "Password not recognised. Please try again.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Password not recognised. Please try again", Toast.LENGTH_SHORT).show();
                             } catch (FirebaseNetworkException e) {
-                                Toast.makeText(LoginActivity.this, "Network connection required to login. Please connect to the internet and try again.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Network connection required to login. Please connect to the internet and try again", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "sign in failed due to network: " + e.toString());
                             } catch (Exception e) {
                                 Log.d(TAG, "sign in failed: " + e.toString());
@@ -164,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
 
         } else {
-            Toast.makeText(this, "Please enter your email and password.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter your email and password", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
         }
 
