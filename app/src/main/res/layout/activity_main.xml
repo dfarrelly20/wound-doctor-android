@@ -10,41 +10,6 @@
     android:padding="20dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:visibility="invisible"
-        android:id="@+id/main_WelcomeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome\nUser"
-        android:textSize="36sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:visibility="invisible"
-        android:id="@+id/main_HowTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:text="How are you today?"
-        android:textSize="22sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_WelcomeTextView" />
-
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:layout_marginTop="50dp"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/main_HowTextView">-->
-
-    <!--        <Button-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"/>-->
-
-    <!--    </androidx.cardview.widget.CardView>-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,32 +35,25 @@
                 android:paddingTop="25dp"
                 android:paddingBottom="25dp">
 
-                <!--                <ImageView-->
-                <!--                    android:layout_weight="1"-->
-                <!--                    android:layout_marginRight="15dp"-->
-                <!--                    android:layout_width="20dp"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:src="@drawable/cameraheart" />-->
-
                 <LinearLayout
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:text="Health Check"
+                        android:text="@string/main_health_check_title"
                         android:textColor="@color/colorAccent"
                         android:textSize="22sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Get an update on the condition \nof your wound"
+                        android:text="@string/main_health_check_desc"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -130,7 +88,7 @@
                 <LinearLayout
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -138,14 +96,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:text="My Wounds"
+                        android:text="@string/main_my_wounds_title"
                         android:textColor="@color/colorAccent"
                         android:textSize="22sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Register a wound or change \na bandage"
+                        android:text="@string/main_my_wounds_desc"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -180,7 +138,7 @@
                 <LinearLayout
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -188,14 +146,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:text="Sign Out"
+                        android:text="@string/main_sign_out_title"
                         android:textColor="@color/colorAccent"
                         android:textSize="22sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sign out of your Wound \nDoctor account"
+                        android:text="@string/main_sign_out_desc"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -211,180 +169,6 @@
 
         </androidx.cardview.widget.CardView>
 
-
     </LinearLayout>
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:orientation="vertical"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-
-    <!--        <LinearLayout-->
-    <!--            android:orientation="horizontal"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content">-->
-
-    <!--            <androidx.cardview.widget.CardView-->
-    <!--                android:layout_margin="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content">-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:padding="20dp"-->
-    <!--                    android:orientation="horizontal"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content">-->
-
-    <!--                    <ImageView-->
-    <!--                        android:src="@drawable/logout"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                    <TextView-->
-    <!--                        android:text="Health \nCheck"-->
-    <!--                        android:textSize="20sp"-->
-    <!--                        android:padding="20dp"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                </LinearLayout>-->
-
-    <!--            </androidx.cardview.widget.CardView>-->
-
-    <!--            <androidx.cardview.widget.CardView-->
-    <!--                android:layout_margin="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content">-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:orientation="horizontal"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content">-->
-
-    <!--                    <ImageView-->
-    <!--                        android:src="@drawable/logout"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                    <TextView-->
-    <!--                        android:text="My \nWounds"-->
-    <!--                        android:textSize="20sp"-->
-    <!--                        android:padding="20dp"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                </LinearLayout>-->
-
-    <!--            </androidx.cardview.widget.CardView>-->
-
-    <!--        </LinearLayout>-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="horizontal">-->
-
-    <!--            <androidx.cardview.widget.CardView-->
-    <!--                android:layout_margin="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content">-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:orientation="horizontal"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content">-->
-
-    <!--                    <ImageView-->
-    <!--                        android:src="@drawable/logout"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                    <TextView-->
-    <!--                        android:text="Settings"-->
-    <!--                        android:textSize="20sp"-->
-    <!--                        android:padding="20dp"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                </LinearLayout>-->
-
-    <!--            </androidx.cardview.widget.CardView>-->
-
-    <!--            <androidx.cardview.widget.CardView-->
-    <!--                android:layout_margin="5dp"-->
-    <!--                android:layout_weight="1"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content">-->
-
-    <!--                <LinearLayout-->
-    <!--                    android:orientation="horizontal"-->
-    <!--                    android:gravity="center"-->
-    <!--                    android:layout_width="match_parent"-->
-    <!--                    android:layout_height="wrap_content">-->
-
-    <!--                    <ImageView-->
-    <!--                        android:src="@drawable/logout"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                    <TextView-->
-    <!--                        android:text="Sign \nOut"-->
-    <!--                        android:textSize="20sp"-->
-    <!--                        android:padding="20dp"-->
-    <!--                        android:layout_width="wrap_content"-->
-    <!--                        android:layout_height="wrap_content"/>-->
-
-    <!--                </LinearLayout>-->
-
-    <!--            </androidx.cardview.widget.CardView>-->
-
-
-    <!--        </LinearLayout>-->
-
-    <!--    </LinearLayout>-->
-
-    <!--    <LinearLayout-->
-    <!--        android:id="@+id/linearLayout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:orientation="vertical"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/main_TakePictureButton"-->
-    <!--            style="@style/MenuButton"-->
-    <!--            android:drawableTint="#FFFFFF"-->
-    <!--            android:text="@string/main_take_a_picture"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--        <Button-->
-    <!--            android:id="@+id/main_MyWoundsButton"-->
-    <!--            style="@style/MenuButton"-->
-    <!--            android:drawableTint="#FFFFFF"-->
-    <!--            android:text="@string/main_my_wounds_button"-->
-    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--            app:layout_constraintEnd_toEndOf="parent"-->
-    <!--            app:layout_constraintStart_toStartOf="parent"-->
-    <!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--    </LinearLayout>-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

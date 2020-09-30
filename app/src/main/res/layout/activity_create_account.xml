@@ -51,7 +51,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/create_account_confirm_id_text" />
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -176,6 +175,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-
 
 </LinearLayout>

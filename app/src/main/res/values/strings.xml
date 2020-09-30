@@ -19,4 +19,18 @@
     <string name="menu_sign_out">Sign Out</string>
     <string name="main_my_wounds_button">My Wounds</string>
     <string name="create_account_confirm_password_hint">Confirm Password</string>
+    <string name="login_logo_text">WoundDoctor</string>
+    <string name="main_health_check_title">Health Check</string>
+    <string name="main_health_check_desc">Get an update on the condition \nof your wound</string>
+    <string name="main_my_wounds_title">My Wounds</string>
+    <string name="main_my_wounds_desc">Register a wound or change \na bandage</string>
+    <string name="main_sign_out_title">Sign Out</string>
+    <string name="main_sign_out_desc">Sign out of your Wound \nDoctor account</string>
+    <string name="main_flash_off_text">Flash Off</string>
+    <string name="main_flash_on_text">Flash On</string>
+    <string name="adapter_condition_danger">Danger</string>
+    <string name="adapter_condition_OK">OK</string>
+    <string name="feedback_diagnosing">Diagnosing wound...</string>
+    <string name="feedback_posting">Posting feedback...</string>
+    <string name="feedback_scheduling">Scheduling update...</string>
 </resources>
